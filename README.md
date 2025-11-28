@@ -303,11 +303,10 @@ Contributions are welcome! Please follow these steps:
 
 **Mohammed Faisal Imraan**
 - Email: mohammedfaisalimraan@klh.edu.in
-- GitHub: [@yourusername](https://github.com/yourusername)
+- GitHub: [@Faisal9381](https://github.com/Faisal9381)
 
 **Mohammad Zaid Amaan**
 - Email: mohammadzaidamaan@klh.edu.in
-- GitHub: [@yourusername](https://github.com/yourusername)
 
 ## 🙏 Acknowledgments
 
