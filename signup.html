@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Sign Up - MediTrack</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --neon-green: #00ff88;
+            --neon-cyan: #00d4ff;
+            --dark-bg: #0a0a0f;
+            --card-bg: rgba(20, 20, 30, 0.8);
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--dark-bg);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(circle at 20% 20%, rgba(0, 255, 136, 0.15), transparent 40%),
+                radial-gradient(circle at 80% 80%, rgba(0, 212, 255, 0.15), transparent 40%),
+                radial-gradient(circle at 50% 50%, rgba(138, 43, 226, 0.1), transparent 50%);
+            animation: bgShift 20s ease infinite;
+            z-index: -1;
+        }
+
+        @keyframes bgShift {
+
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1) rotate(0deg);
+            }
+
+            50% {
+                opacity: 0.8;
+                transform: scale(1.1) rotate(5deg);
+            }
+        }
+
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--neon-green);
+            border-radius: 50%;
+            opacity: 0;
+            animation: float 15s infinite;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                opacity: 0;
+                transform: translateY(0) translateX(0);
+            }
+
+            10% {
+                opacity: 1;
+            }
+
+            90% {
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateY(-100vh) translateX(50px);
+            }
+        }
+
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            backdrop-filter: blur(20px);
+            background: rgba(10, 10, 15, 0.7);
+            border-bottom: 1px solid rgba(0, 255, 136, 0.2);
+            z-index: 1000;
+        }
+
+        .header-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            transition: transform 0.3s;
+        }
+
+        .brand:hover {
+            transform: scale(1.05);
+        }
+
+        .brand-mark {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--neon-green), var(--neon-cyan));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: 800;
+            color: #000;
+            box-shadow: 0 0 30px rgba(0, 255, 136, 0.6);
+            animation: pulse 3s ease infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                box-shadow: 0 0 30px rgba(0, 255, 136, 0.6);
+            }
+
+            50% {
+                box-shadow: 0 0 50px rgba(0, 255, 136, 1);
+            }
+        }
+
+        .brand-text span {
+            display: block;
+            font-weight: 700;
+            font-size: 22px;
+            background: linear-gradient(90deg, var(--neon-green), var(--neon-cyan));
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        nav a {
+            padding: 10px 20px;
+            border-radius: 50px;
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        nav a:hover {
+            color: var(--neon-green);
+        }
+
+        main {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 120px 20px 40px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .signup-container {
+            width: 100%;
+            max-width: 900px;
+            animation: fadeInUp 0.8s ease;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .signup-card {
+            background: rgba(20, 20, 30, 0.8);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 50px 40px;
+            border: 1px solid rgba(0, 255, 136, 0.2);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .signup-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .signup-title {
+            font-size: 32px;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--neon-green), var(--neon-cyan));
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .signup-subtitle {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .user-type-selector {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 40px;
+        }
+
+        .user-type-btn {
+            padding: 20px;
+            border-radius: 16px;
+            border: 2px solid rgba(0, 255, 136, 0.2);
+            background: rgba(0, 0, 0, 0.2);
+            color: var(--text-primary);
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-type-btn .icon {
+            font-size: 32px;
+        }
+
+        .user-type-btn:hover,
+        .user-type-btn.active {
+            border-color: var(--neon-green);
+            background: rgba(0, 255, 136, 0.1);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 255, 136, 0.3);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-group-full {
+            grid-column: 1 / -1;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 18px;
+            opacity: 0.5;
+        }
+
+        .form-input,
+        .form-select {
+            width: 100%;
+            padding: 16px 20px;
+            border-radius: 12px;
+            border: 2px solid rgba(0, 255, 136, 0.2);
+            background: rgba(0, 0, 0, 0.3);
+            color: var(--text-primary);
+            font-size: 15px;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s;
+            outline: none;
+        }
+
+        .form-input:focus,
+        .form-select:focus {
+            border-color: var(--neon-green);
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+        }
+
+        .form-input::placeholder {
+            color: var(--text-secondary);
+            opacity: 0.6;
+        }
+
+        .form-select option {
+            background: #1a1a24;
+            color: var(--text-primary);
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            accent-color: var(--neon-green);
+            cursor: pointer;
+            margin-top: 2px;
+        }
+
+        .checkbox-group label {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        .checkbox-group a {
+            color: var(--neon-cyan);
+            text-decoration: none;
+        }
+
+        .checkbox-group a:hover {
+            color: var(--neon-green);
+        }
+
+        .btn-signup {
+            width: 100%;
+            padding: 16px;
+            border-radius: 50px;
+            border: none;
+            background: linear-gradient(135deg, var(--neon-green), var(--neon-cyan));
+            color: #000;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 10px 40px rgba(0, 255, 136, 0.4);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .btn-signup::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn-signup:hover::before {
+            width: 600px;
+            height: 600px;
+        }
+
+        .btn-signup:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 50px rgba(0, 255, 136, 0.6);
+        }
+
+        .login-prompt {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .login-prompt a {
+            color: var(--neon-green);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+
+        .login-prompt a:hover {
+            color: var(--neon-cyan);
+        }
+
+        @media (max-width: 768px) {
+            .signup-card {
+                padding: 40px 30px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .user-type-selector {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+</head>
+
+<body>
+    <div class="particles" id="particles"></div>
+
+    <header>
+        <div class="header-inner">
+            <a href="landing.html" class="brand">
+                <div class="brand-mark">M</div>
+                <div class="brand-text">
+                    <span>MediTrack</span>
+                </div>
+            </a>
+            <nav>
+                <a href="landing.html">← Back to Home</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="signup-container">
+            <div class="signup-card">
+                <div class="signup-header">
+                    <h1 class="signup-title">Create Your Account</h1>
+                    <p class="signup-subtitle">Choose your account type and fill in your details</p>
+                </div>
+
+                <div class="user-type-selector">
+                    <button type="button" class="user-type-btn active" onclick="selectUserType('patient', this)">
+                        <span class="icon">👤</span>
+                        <span>Patient</span>
+                    </button>
+                    <button type="button" class="user-type-btn" onclick="selectUserType('caretaker', this)">
+                        <span class="icon">👨‍⚕️</span>
+                        <span>Caretaker</span>
+                    </button>
+                </div>
+
+                <form id="signupForm">
+                    <input type="hidden" id="userType" value="patient">
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">Full Name</label>
+                            <input type="text" id="fullName" class="form-input" placeholder="Enter your full name" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Date of Birth</label>
+                            <input type="date" id="dateOfBirth" class="form-input" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Email Address</label>
+                            <input type="email" id="emailInput" class="form-input" placeholder="your.email@example.com"
+                                required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Phone Number</label>
+                            <input type="tel" id="phoneNumber" class="form-input" placeholder="+1 (555) 123-4567" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Password</label>
+                            <input type="password" id="password" class="form-input" placeholder="Create a strong password" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Confirm Password</label>
+                            <input type="password" id="confirmPassword" class="form-input" placeholder="Confirm your password" required>
+                        </div>
+
+                        <div class="form-group form-group-full" id="patientFields">
+                            <label class="form-label">Medical Conditions (Optional)</label>
+                            <div class="input-wrapper">
+                                <span class="input-icon">🏥</span>
+                                <input type="text" id="medicalConditions" class="form-input" style="padding-left: 50px;"
+                                    placeholder="e.g., Diabetes, Hypertension">
+                            </div>
+                        </div>
+
+                        <div class="form-group form-group-full" id="caretakerFields" style="display: none;">
+                            <label class="form-label">Relationship to Patient</label>
+                            <select id="relationshipToPatient" class="form-select">
+                                <option value="">Select relationship</option>
+                                <option value="family">Family Member</option>
+                                <option value="professional">Professional Caretaker</option>
+                                <option value="nurse">Nurse</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="terms" required>
+                        <label for="terms">
+                            I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
+                        </label>
+                    </div>
+
+                    <button type="submit" class="btn-signup">Create Account</button>
+                </form>
+
+                <div class="login-prompt">
+                    Already have an account? <a href="login.html">Login</a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const particlesContainer = document.getElementById('particles');
+        for (let i = 0; i < 20; i++) {
+            const particle = document.createElement('div');
+            particle.classList.add('particle');
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.animationDelay = Math.random() * 15 + 's';
+            particle.style.animationDuration = (10 + Math.random() * 10) + 's';
+            particlesContainer.appendChild(particle);
+        }
+
+        // Check for email parameter in URL and prefill
+        const urlParams = new URLSearchParams(window.location.search);
+        const email = urlParams.get('email');
+        if (email) {
+            document.getElementById('emailInput').value = email;
+        }
+
+        function selectUserType(type, button) {
+            document.querySelectorAll('.user-type-btn').forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+            document.getElementById('userType').value = type;
+
+            const patientFields = document.getElementById('patientFields');
+            const caretakerFields = document.getElementById('caretakerFields');
+
+            if (type === 'patient') {
+                patientFields.style.display = 'block';
+                caretakerFields.style.display = 'none';
+            } else {
+                patientFields.style.display = 'none';
+                caretakerFields.style.display = 'block';
+            }
+        }
+
+        // Initialize Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyA-rCvbivSZeN481tIWUthoGFRUjXRz3PI",
+            authDomain: "meditrack-752c5.firebaseapp.com",
+            projectId: "meditrack-752c5",
+            storageBucket: "meditrack-752c5.firebasestorage.app",
+            messagingSenderId: "1018831194932",
+            appId: "1:1018831194932:web:b50c1a89ebf0d03e503361"
+        };
+        
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        
+        // Helper function to save user data
+        async function saveUserData(uid, userData, userType) {
+            try {
+                // Save to users collection for quick type lookup
+                await db.collection('users').doc(uid).set({
+                    email: userData.email,
+                    userType: userType,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+        
+                // Save to type-specific collection
+                const collection = userType === 'patient' ? 'patients' : 'caretakers';
+                await db.collection(collection).doc(uid).set({
+                    ...userData,
+                    uid: uid,
+                    userType: userType,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+        
+                return { success: true };
+            } catch (error) {
+                console.error('Error saving user data:', error);
+                return { success: false, error: error.message };
+            }
+        }
+        
+        document.getElementById('signupForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+            
+            const submitBtn = e.target.querySelector('.btn-signup');
+            const originalText = submitBtn.textContent;
+            
+            try {
+                submitBtn.textContent = 'Creating Account...';
+                submitBtn.disabled = true;
+                
+                // Get form values
+                const email = document.getElementById('emailInput').value;
+                const password = document.getElementById('password').value;
+                const confirmPassword = document.getElementById('confirmPassword').value;
+                const fullName = document.getElementById('fullName').value;
+                const dateOfBirth = document.getElementById('dateOfBirth').value;
+                const phoneNumber = document.getElementById('phoneNumber').value;
+                const userType = document.getElementById('userType').value;
+                
+                // Validate passwords match
+                if (password !== confirmPassword) {
+                    throw new Error('Passwords do not match!');
+                }
+                
+                // Validate password strength
+                if (password.length < 6) {
+                    throw new Error('Password must be at least 6 characters long!');
+                }
+                
+                // Create user in Firebase Authentication
+                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+                const user = userCredential.user;
+                
+                // Prepare user data
+                const userData = {
+                    email: email,
+                    fullName: fullName,
+                    dateOfBirth: dateOfBirth,
+                    phoneNumber: phoneNumber
+                };
+                
+                // Add type-specific data
+                if (userType === 'patient') {
+                    const medicalConditions = document.getElementById('medicalConditions').value;
+                    userData.medicalConditions = medicalConditions;
+                } else {
+                    const relationshipToPatient = document.getElementById('relationshipToPatient').value;
+                    userData.relationshipToPatient = relationshipToPatient;
+                }
+                
+                // Save user data to Firestore
+                const result = await saveUserData(user.uid, userData, userType);
+                
+                if (result.success) {
+                    alert('Account created successfully! Welcome to MediTrack.');
+                    window.location.href = 'login.html';
+                } else {
+                    throw new Error(result.error);
+                }
+                
+            } catch (error) {
+                console.error('Signup error:', error);
+                let errorMessage = 'An error occurred during signup.';
+                
+                // Provide user-friendly error messages
+                if (error.code === 'auth/email-already-in-use') {
+                    errorMessage = 'This email is already registered. Please login instead.';
+                } else if (error.code === 'auth/invalid-email') {
+                    errorMessage = 'Invalid email address format.';
+                } else if (error.code === 'auth/weak-password') {
+                    errorMessage = 'Password is too weak. Please use a stronger password.';
+                } else if (error.message) {
+                    errorMessage = error.message;
+                }
+                
+                alert(errorMessage);
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+            }
+        });
+    </script>
+</body>
+
+</html>

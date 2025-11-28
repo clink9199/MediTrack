@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Login - MediTrack</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --neon-green: #00ff88;
+            --neon-cyan: #00d4ff;
+            --dark-bg: #0a0a0f;
+            --card-bg: rgba(20, 20, 30, 0.8);
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--dark-bg);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(circle at 20% 20%, rgba(0, 255, 136, 0.15), transparent 40%),
+                radial-gradient(circle at 80% 80%, rgba(0, 212, 255, 0.15), transparent 40%),
+                radial-gradient(circle at 50% 50%, rgba(138, 43, 226, 0.1), transparent 50%);
+            animation: bgShift 20s ease infinite;
+            z-index: -1;
+        }
+
+        @keyframes bgShift {
+
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1) rotate(0deg);
+            }
+
+            50% {
+                opacity: 0.8;
+                transform: scale(1.1) rotate(5deg);
+            }
+        }
+
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--neon-green);
+            border-radius: 50%;
+            opacity: 0;
+            animation: float 15s infinite;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                opacity: 0;
+                transform: translateY(0) translateX(0);
+            }
+
+            10% {
+                opacity: 1;
+            }
+
+            90% {
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateY(-100vh) translateX(50px);
+            }
+        }
+
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            backdrop-filter: blur(20px);
+            background: rgba(10, 10, 15, 0.7);
+            border-bottom: 1px solid rgba(0, 255, 136, 0.2);
+            z-index: 1000;
+        }
+
+        .header-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            transition: transform 0.3s;
+        }
+
+        .brand:hover {
+            transform: scale(1.05);
+        }
+
+        .brand-mark {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--neon-green), var(--neon-cyan));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: 800;
+            color: #000;
+            box-shadow: 0 0 30px rgba(0, 255, 136, 0.6);
+            animation: pulse 3s ease infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                box-shadow: 0 0 30px rgba(0, 255, 136, 0.6);
+            }
+
+            50% {
+                box-shadow: 0 0 50px rgba(0, 255, 136, 1);
+            }
+        }
+
+        .brand-text span {
+            display: block;
+            font-weight: 700;
+            font-size: 22px;
+            background: linear-gradient(90deg, var(--neon-green), var(--neon-cyan));
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        nav a {
+            padding: 10px 20px;
+            border-radius: 50px;
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        nav a:hover {
+            color: var(--neon-green);
+        }
+
+        main {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 120px 20px 40px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 450px;
+            animation: fadeInUp 0.8s ease;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .login-card {
+            background: rgba(20, 20, 30, 0.8);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 50px 40px;
+            border: 1px solid rgba(0, 255, 136, 0.2);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .login-title {
+            font-size: 32px;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--neon-green), var(--neon-cyan));
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .login-subtitle {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 16px 20px;
+            border-radius: 12px;
+            border: 2px solid rgba(0, 255, 136, 0.2);
+            background: rgba(0, 0, 0, 0.3);
+            color: var(--text-primary);
+            font-size: 15px;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s;
+            outline: none;
+        }
+
+        .form-input:focus {
+            border-color: var(--neon-green);
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+        }
+
+        .form-input::placeholder {
+            color: var(--text-secondary);
+            opacity: 0.6;
+        }
+
+        .forgot-password {
+            text-align: right;
+            margin-top: -10px;
+            margin-bottom: 24px;
+        }
+
+        .forgot-password a {
+            color: var(--neon-cyan);
+            text-decoration: none;
+            font-size: 13px;
+            transition: color 0.3s;
+        }
+
+        .forgot-password a:hover {
+            color: var(--neon-green);
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 16px;
+            border-radius: 50px;
+            border: none;
+            background: linear-gradient(135deg, var(--neon-green), var(--neon-cyan));
+            color: #000;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 10px 40px rgba(0, 255, 136, 0.4);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-login::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn-login:hover::before {
+            width: 400px;
+            height: 400px;
+        }
+
+        .btn-login:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 50px rgba(0, 255, 136, 0.6);
+        }
+
+        .divider {
+            text-align: center;
+            margin: 30px 0;
+            position: relative;
+        }
+
+        .divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .divider span {
+            background: rgba(20, 20, 30, 0.8);
+            padding: 0 15px;
+            position: relative;
+            color: var(--text-secondary);
+            font-size: 13px;
+        }
+
+        .signup-prompt {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .signup-prompt a {
+            color: var(--neon-green);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+
+        .signup-prompt a:hover {
+            color: var(--neon-cyan);
+        }
+
+        @media (max-width: 768px) {
+            .login-card {
+                padding: 40px 30px;
+            }
+        }
+    </style>
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+</head>
+
+<body>
+    <div class="particles" id="particles"></div>
+
+    <header>
+        <div class="header-inner">
+            <a href="landing.html" class="brand">
+                <div class="brand-mark">M</div>
+                <div class="brand-text">
+                    <span>MediTrack</span>
+                </div>
+            </a>
+            <nav>
+                <a href="landing.html">← Back to Home</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="login-container">
+            <div class="login-card">
+                <div class="login-header">
+                    <h1 class="login-title">Welcome Back</h1>
+                    <p class="login-subtitle">Please enter your details to continue</p>
+                </div>
+
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label class="form-label">Email or Phone Number</label>
+                        <input type="text" id="emailOrPhone" class="form-input" placeholder="your.email@example.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Password</label>
+                        <input type="password" id="loginPassword" class="form-input" placeholder="Enter your password" required>
+                    </div>
+
+                    <div class="forgot-password">
+                        <a href="#">Forgot password?</a>
+                    </div>
+
+                    <button type="submit" class="btn-login">Login</button>
+                </form>
+
+                <div class="divider">
+                    <span>or</span>
+                </div>
+
+                <div class="signup-prompt">
+                    Don't have an account? <a href="signup.html">Sign up</a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const particlesContainer = document.getElementById('particles');
+        for (let i = 0; i < 20; i++) {
+            const particle = document.createElement('div');
+            particle.classList.add('particle');
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.animationDelay = Math.random() * 15 + 's';
+            particle.style.animationDuration = (10 + Math.random() * 10) + 's';
+            particlesContainer.appendChild(particle);
+        }
+        
+        // Initialize Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyA-rCvbivSZeN481tIWUthoGFRUjXRz3PI",
+            authDomain: "meditrack-752c5.firebaseapp.com",
+            projectId: "meditrack-752c5",
+            storageBucket: "meditrack-752c5.firebasestorage.app",
+            messagingSenderId: "1018831194932",
+            appId: "1:1018831194932:web:b50c1a89ebf0d03e503361"
+        };
+        
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        
+        // Helper function to get user data
+        async function getUserData(uid) {
+            try {
+                // First, get user type
+                const userDoc = await db.collection('users').doc(uid).get();
+                
+                if (!userDoc.exists) {
+                    throw new Error('User not found');
+                }
+        
+                const userType = userDoc.data().userType;
+                
+                // Get full user data from appropriate collection
+                const collection = userType === 'patient' ? 'patients' : 'caretakers';
+                const userDataDoc = await db.collection(collection).doc(uid).get();
+                
+                if (!userDataDoc.exists) {
+                    throw new Error('User data not found');
+                }
+        
+                return {
+                    success: true,
+                    data: userDataDoc.data()
+                };
+            } catch (error) {
+                console.error('Error getting user data:', error);
+                return { success: false, error: error.message };
+            }
+        }
+        
+        // Wait for Firebase to be fully loaded
+        window.addEventListener('load', function() {
+            // Check if Firebase is loaded
+            if (typeof firebase === 'undefined' || !auth || !db) {
+                console.error('Firebase not properly initialized');
+                alert('Authentication system not ready. Please refresh the page.');
+                return;
+            }
+        });
+        
+        document.getElementById('loginForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+            
+            const submitBtn = e.target.querySelector('.btn-login');
+            const originalText = submitBtn.textContent;
+            
+            try {
+                submitBtn.textContent = 'Logging in...';
+                submitBtn.disabled = true;
+                
+                // Get form values
+                const emailOrPhone = document.getElementById('emailOrPhone').value;
+                const password = document.getElementById('loginPassword').value;
+                
+                // Sign in with Firebase Authentication
+                const userCredential = await auth.signInWithEmailAndPassword(emailOrPhone, password);
+                const user = userCredential.user;
+                
+                // Get user data and type
+                const userDataResult = await getUserData(user.uid);
+                
+                if (!userDataResult.success) {
+                    throw new Error('Failed to load user data');
+                }
+                
+                const userData = userDataResult.data;
+                
+                // Store user data in session storage
+                sessionStorage.setItem('currentUser', JSON.stringify(userData));
+                sessionStorage.setItem('userType', userData.userType);
+                
+                // Redirect to appropriate dashboard
+                if (userData.userType === 'patient') {
+                    window.location.href = 'patient-dashboard.html';
+                } else if (userData.userType === 'caretaker') {
+                    window.location.href = 'caretaker-dashboard.html';
+                } else {
+                    // Fallback for unknown user types
+                    window.location.href = 'meditrack.html';
+                }
+                
+            } catch (error) {
+                console.error('Login error:', error);
+                let errorMessage = 'An error occurred during login.';
+                
+                // Provide user-friendly error messages
+                if (error.code === 'auth/user-not-found') {
+                    errorMessage = 'No account found with this email. Please sign up first.';
+                } else if (error.code === 'auth/wrong-password') {
+                    errorMessage = 'Incorrect password. Please try again.';
+                } else if (error.code === 'auth/invalid-email') {
+                    errorMessage = 'Invalid email address format.';
+                } else if (error.code === 'auth/user-disabled') {
+                    errorMessage = 'This account has been disabled.';
+                } else if (error.message) {
+                    errorMessage = error.message;
+                }
+                
+                alert(errorMessage);
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+            }
+        });
+    </script>
+</body>
+
+</html>

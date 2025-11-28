@@ -1,0 +1,1787 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Dashboard - MediTrack</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #e0e7ff 0%, #f3e8ff 100%);
+            min-height: 100vh;
+            display: flex;
+        }
+
+        .sidebar {
+            width: 260px;
+            background: #4f46e5;
+            display: flex;
+            flex-direction: column;
+            padding: 0;
+            position: fixed;
+            height: 100vh;
+            left: 0;
+            top: 0;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar-header {
+            padding: 30px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-header h2 {
+            color: white;
+            font-size: 24px;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .sidebar-menu {
+            flex: 1;
+            padding: 20px 0;
+            overflow-y: auto;
+        }
+
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            padding: 16px 24px;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 15px;
+            font-weight: 500;
+            border-left: 4px solid transparent;
+        }
+
+        .sidebar-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .sidebar-item.active {
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            border-left-color: white;
+            font-weight: 600;
+        }
+
+        .sidebar-item-icon {
+            width: 8px;
+            height: 8px;
+            margin-right: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 8px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .sidebar-item.active .sidebar-item-icon {
+            background: white;
+        }
+
+        .sidebar-item-text {
+            flex: 1;
+        }
+
+        .sidebar-footer {
+            padding: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-item.logout {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .sidebar-item.logout:hover {
+            background: rgba(239, 68, 68, 0.2);
+            color: #fee2e2;
+        }
+
+        .main-content {
+            margin-left: 260px;
+            flex: 1;
+            padding: 40px;
+            max-width: 1200px;
+        }
+
+        .header {
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            color: #64748b;
+            font-size: 16px;
+        }
+
+        .page-section {
+            display: none;
+        }
+
+        .page-section.active {
+            display: block;
+        }
+
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .alert-card {
+            background: #fef2f2;
+            border-left: 4px solid #ef4444;
+        }
+
+        .alert-card h3 {
+            color: #dc2626;
+            font-size: 18px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .alert-text {
+            color: #991b1b;
+            font-size: 14px;
+            margin-left: 34px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            position: relative;
+        }
+
+        .stat-card h4 {
+            color: #64748b;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 12px;
+        }
+
+        .stat-value {
+            font-size: 36px;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .section-header h2 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        .btn-primary {
+            background: #4f46e5;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .btn-primary:hover {
+            background: #4338ca;
+            transform: translateY(-2px);
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 14px 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 15px;
+            margin-bottom: 24px;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: #4f46e5;
+        }
+
+        .medication-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+            position: relative;
+        }
+
+        .medication-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 12px;
+        }
+
+        .medication-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .medication-dosage {
+            color: #64748b;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .medication-details {
+            color: #4f46e5;
+            font-size: 13px;
+            margin-bottom: 4px;
+        }
+
+        .medication-stock {
+            color: #64748b;
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+
+        .medication-note {
+            color: #71717a;
+            font-size: 13px;
+            font-style: italic;
+        }
+
+        .low-stock-badge {
+            background: #fee2e2;
+            color: #dc2626;
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .delete-btn {
+            color: #ef4444;
+            cursor: pointer;
+            font-size: 14px;
+            padding: 8px 12px;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .delete-btn:hover {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .caregiver-card {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .caregiver-avatar {
+            width: 60px;
+            height: 60px;
+            background: #ddd6fe;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: 600;
+            color: #7c3aed;
+            text-transform: uppercase;
+        }
+
+        .caregiver-info {
+            flex: 1;
+        }
+
+        .caregiver-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 4px;
+        }
+
+        .caregiver-contact {
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        .caregiver-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn-secondary {
+            background: #e0e7ff;
+            color: #4f46e5;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        .btn-danger {
+            background: transparent;
+            color: #ef4444;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .history-table {
+            width: 100%;
+            margin-top: 24px;
+        }
+
+        .history-table th {
+            text-align: left;
+            color: #64748b;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .history-table td {
+            padding: 16px 0;
+            color: #1e293b;
+            font-size: 14px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .status-badge {
+            background: #d1fae5;
+            color: #059669;
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+
+        .upload-area {
+            background: white;
+            border-radius: 16px;
+            padding: 60px 40px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .camera-icon {
+            width: 120px;
+            height: 120px;
+            background: #e0e7ff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: 600;
+            margin: 0 auto 24px;
+            color: #4f46e5;
+            text-transform: uppercase;
+        }
+
+        .upload-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 12px;
+        }
+
+        .upload-description {
+            color: #64748b;
+            margin-bottom: 32px;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .upload-note {
+            color: #9ca3af;
+            font-size: 13px;
+            font-style: italic;
+            margin-top: 24px;
+        }
+
+        .setting-item {
+            padding: 20px 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .setting-item:last-child {
+            border-bottom: none;
+        }
+
+        .setting-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .setting-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .setting-description {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 48px;
+            height: 24px;
+            background: #cbd5e1;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .toggle-switch.active {
+            background: #4f46e5;
+        }
+
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            transition: transform 0.3s;
+        }
+
+        .toggle-switch.active::after {
+            transform: translateX(24px);
+        }
+
+        .setting-input {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 12px;
+        }
+
+        .setting-input input {
+            width: 80px;
+            padding: 8px 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .setting-input input:focus {
+            outline: none;
+            border-color: #4f46e5;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        .close-modal {
+            font-size: 24px;
+            cursor: pointer;
+            color: #64748b;
+        }
+
+        .preview-image {
+            width: 100%;
+            max-height: 200px;
+            object-fit: contain;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            background: #f1f5f9;
+        }
+
+        .scan-progress {
+            text-align: center;
+            padding: 20px;
+            display: none;
+        }
+
+        .scan-progress.active {
+            display: block;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #e0e7ff;
+            border-top: 4px solid #4f46e5;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Search Result Styles */
+        .drug-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+            border: 1px solid #e2e8f0;
+            transition: transform 0.2s;
+        }
+
+        .drug-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .drug-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 12px;
+        }
+
+        .drug-brand {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        .drug-generic {
+            font-size: 14px;
+            color: #64748b;
+            font-style: italic;
+        }
+
+        .drug-section {
+            margin-top: 12px;
+        }
+
+        .drug-section-title {
+            font-size: 12px;
+            font-weight: 700;
+            color: #475569;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .drug-text {
+            font-size: 14px;
+            color: #334155;
+            line-height: 1.5;
+        }
+
+        .warning-badge {
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 700;
+            display: inline-block;
+            margin-bottom: 8px;
+        }
+        .warning-badge {
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 700;
+            display: inline-block;
+            margin-bottom: 8px;
+        }
+
+        /* Toast Notification Styles */
+        .toast-container {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .toast {
+            background: white;
+            border-radius: 12px;
+            padding: 16px 20px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            min-width: 320px;
+            max-width: 400px;
+            display: flex;
+            align-items: start;
+            gap: 12px;
+            animation: slideInRight 0.3s ease;
+            border-left: 4px solid #4f46e5;
+        }
+
+        .toast.success {
+            border-left-color: #10b981;
+        }
+
+        .toast.error {
+            border-left-color: #ef4444;
+        }
+
+        .toast.warning {
+            border-left-color: #f59e0b;
+        }
+
+        .toast-icon {
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .toast-content {
+            flex: 1;
+        }
+
+        .toast-title {
+            font-weight: 600;
+            color: #1e293b;
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .toast-message {
+            color: #64748b;
+            font-size: 13px;
+            line-height: 1.4;
+        }
+
+        .toast-close {
+            color: #94a3b8;
+            cursor: pointer;
+            font-size: 20px;
+            line-height: 1;
+            padding: 0 4px;
+            transition: color 0.2s;
+        }
+
+        .toast-close:hover {
+            color: #64748b;
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOutRight {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+        }
+
+        /* Password Toggle */
+        .password-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #94a3b8;
+            cursor: pointer;
+            padding: 4px;
+            font-size: 18px;
+            transition: color 0.2s;
+            z-index: 10;
+        }
+
+        .password-toggle:hover {
+            color: #64748b;
+        }
+    </style>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <!-- Tesseract.js for OCR -->
+    <script src='https://unpkg.com/tesseract.js@v2.1.0/dist/tesseract.min.js'></script>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h2>MediTrack</h2>
+        </div>
+        <div class="sidebar-menu">
+            <div class="sidebar-item active" onclick="showPage('home')">
+                <div class="sidebar-item-icon">■</div>
+                <div class="sidebar-item-text">Dashboard</div>
+            </div>
+            <div class="sidebar-item" onclick="showPage('add')">
+                <div class="sidebar-item-icon">■</div>
+                <div class="sidebar-item-text">Medications</div>
+            </div>
+            <div class="sidebar-item" onclick="showPage('search')">
+                <div class="sidebar-item-icon">■</div>
+                <div class="sidebar-item-text">Search Drugs</div>
+            </div>
+            <div class="sidebar-item" onclick="showPage('caregivers')">
+                <div class="sidebar-item-icon">■</div>
+                <div class="sidebar-item-text">Caregivers</div>
+            </div>
+            <div class="sidebar-item" onclick="showPage('scan')">
+                <div class="sidebar-item-icon">■</div>
+                <div class="sidebar-item-text">Scan Prescription</div>
+            </div>
+            <div class="sidebar-item" onclick="showPage('settings')">
+                <div class="sidebar-item-icon">■</div>
+                <div class="sidebar-item-text">Settings</div>
+            </div>
+        </div>
+        <div class="sidebar-footer">
+            <div class="sidebar-item logout" onclick="handleLogout()">
+                <div class="sidebar-item-icon">■</div>
+                <div class="sidebar-item-text">Logout</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="header">
+            <h1>MediTrack</h1>
+            <p>Smart Medication Management</p>
+        </div>
+
+        <!-- Home Page -->
+        <div id="home" class="page-section active">
+            <!-- Refill Alert -->
+            <div id="refillAlertCard" class="card alert-card" style="display: none;">
+                <h3>Refill Alert</h3>
+                <div id="refillList"></div>
+            </div>
+
+            <!-- Today's Schedule -->
+            <div class="card">
+                <h3 style="margin-bottom: 12px; font-size: 20px; color: #1e293b;">Today's Schedule</h3>
+                <div id="scheduleList">
+                    <p style="color: #64748b;">Loading schedule...</p>
+                </div>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h4>Active Medications</h4>
+                    <div class="stat-value" style="color: #4f46e5;" id="activeMedsCount">0</div>
+                </div>
+                <div class="stat-card">
+                    <h4>Doses Today</h4>
+                    <div class="stat-value" style="color: #10b981;" id="dosesTodayCount">0</div>
+                </div>
+                <div class="stat-card">
+                    <h4>Caregivers</h4>
+                    <div class="stat-value" style="color: #8b5cf6;" id="caregiversCount">0</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Medicines Page -->
+        <div id="add" class="page-section">
+            <div class="section-header">
+                <h2>Medicines</h2>
+                <button class="btn-primary" onclick="showPage('scan')">+ Add Medication</button>
+            </div>
+
+            <div id="medicinesList">
+                <p style="color: #64748b;">Loading medications...</p>
+            </div>
+        </div>
+
+        <!-- Search Page -->
+        <div id="search" class="page-section">
+            <h2 style="margin-bottom: 24px;">Search Medications</h2>
+            
+            <div style="display: flex; gap: 10px; margin-bottom: 24px;">
+                <input type="text" id="drugSearchInput" class="search-box" style="margin-bottom: 0;" placeholder="Enter medication name (e.g., Advil)..." onkeypress="handleSearchKeyPress(event)">
+                <button class="btn-primary" style="width: auto; white-space: nowrap;" onclick="searchMedications()">Search</button>
+            </div>
+
+            <div id="searchResults">
+                <div style="text-align: center; color: #64748b; margin-top: 40px;">
+                    <p style="font-size: 16px; line-height: 1.6;">Search for any medication to see details<br>from the FDA database.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Caregivers Page -->
+        <div id="caregivers" class="page-section">
+            <div class="section-header">
+                <h2>Caregivers & Dose History</h2>
+                <button class="btn-primary" onclick="openCaretakerModal()">+ Add Caretaker</button>
+            </div>
+
+            <h3 style="margin-bottom: 16px; color: #1e293b; font-size: 18px;">Caregivers</h3>
+            
+            <div id="caregiversList">
+                <p style="color: #64748b;">Loading caregivers...</p>
+            </div>
+
+            <h3 style="margin: 32px 0 16px; color: #1e293b; font-size: 18px;">Dose History</h3>
+
+            <table class="history-table">
+                <thead>
+                    <tr>
+                        <th>MEDICATION</th>
+                        <th>DATE & TIME</th>
+                        <th>STATUS</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Metformin</td>
+                        <td>2024-11-28 08:00</td>
+                        <td><span class="status-badge">taken</span></td>
+                    </tr>
+                    <tr>
+                        <td>Lisinopril</td>
+                        <td>2024-11-28 08:00</td>
+                        <td><span class="status-badge">taken</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Scan Prescription Page -->
+        <div id="scan" class="page-section">
+            <h2 style="margin-bottom: 24px;">Scan Prescription</h2>
+            
+            <div class="upload-area">
+                <div class="camera-icon">SCAN</div>
+                <div class="upload-title">Upload Prescription Image</div>
+                <p class="upload-description">
+                    Take a photo or upload an image of your prescription<br>
+                    to automatically add medications
+                </p>
+                <input type="file" id="prescriptionInput" accept="image/*" style="display: none;" onchange="handlePrescriptionUpload(event)">
+                <button class="btn-primary" onclick="document.getElementById('prescriptionInput').click()">Choose Image</button>
+                <p class="upload-note">
+                    Note: This feature would use OCR (Optical Character<br>
+                    Recognition) to extract medication details
+                </p>
+            </div>
+        </div>
+
+        <!-- Settings Page -->
+        <div id="settings" class="page-section">
+            <h2 style="margin-bottom: 24px;">Settings</h2>
+            
+            <div class="card">
+                <div class="setting-item">
+                    <div class="setting-header">
+                        <div>
+                            <div class="setting-title">Voice Reminders</div>
+                            <div class="setting-description">Enable voice-based medication reminders</div>
+                        </div>
+                        <div class="toggle-switch" onclick="toggleSwitch(this)"></div>
+                    </div>
+                </div>
+
+                <div class="setting-item">
+                    <div class="setting-header">
+                        <div>
+                            <div class="setting-title">Browser Notifications</div>
+                            <div class="setting-description">Receive notifications for medication reminders</div>
+                        </div>
+                        <button class="btn-primary" onclick="enableNotifications()">Enable Notifications</button>
+                    </div>
+                </div>
+
+                <div class="setting-item">
+                    <div class="setting-title" style="margin-bottom: 16px;">Reminder Settings</div>
+                    
+                    <div class="setting-input">
+                        <span style="color: #64748b; font-size: 14px;">Reminder before dose (minutes)</span>
+                        <input type="number" value="15" min="0" max="60">
+                    </div>
+                    
+                    <div class="setting-input">
+                        <span style="color: #64748b; font-size: 14px;">Snooze duration (minutes)</span>
+                        <input type="number" value="10" min="5" max="30">
+                    </div>
+                </div>
+
+                <div class="setting-item">
+                    <div class="setting-title" style="margin-bottom: 12px;">Profile Information</div>
+                    <p style="color: #64748b; margin-bottom: 8px; font-size: 14px;">Name: <span id="userName">Loading...</span></p>
+                    <p style="color: #64748b; margin-bottom: 8px; font-size: 14px;">Email: <span id="userEmail">Loading...</span></p>
+                    <p style="color: #64748b; font-size: 14px;">User Type: Patient</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scan Result Modal -->
+    <div id="scanModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">Review Medication</div>
+                <div class="close-modal" onclick="closeModal()">×</div>
+            </div>
+
+            <div id="scanProgress" class="scan-progress">
+                <div class="spinner"></div>
+                <p>Scanning prescription... <span id="progressText">0%</span></p>
+            </div>
+
+            <div id="scanResultForm" style="display: none;">
+                <img id="imagePreview" class="preview-image" src="" alt="Prescription Preview">
+                
+                <div class="form-group" style="margin-bottom: 15px;">
+                    <label class="form-label" style="display: block; margin-bottom: 5px; color: #64748b; font-size: 14px;">Medication Name</label>
+                    <input type="text" id="scanName" class="search-box" style="margin-bottom: 0;">
+                </div>
+
+                <div class="form-group" style="margin-bottom: 15px;">
+                    <label class="form-label" style="display: block; margin-bottom: 5px; color: #64748b; font-size: 14px;">Dosage</label>
+                    <input type="text" id="scanDosage" class="search-box" style="margin-bottom: 0;" placeholder="e.g., 500mg">
+                </div>
+
+                <div class="form-group" style="margin-bottom: 15px;">
+                    <label class="form-label" style="display: block; margin-bottom: 5px; color: #64748b; font-size: 14px;">Frequency</label>
+                    <input type="text" id="scanFrequency" class="search-box" style="margin-bottom: 0;" placeholder="e.g., Twice daily">
+                </div>
+
+                <div class="form-group" style="margin-bottom: 15px;">
+                    <label class="form-label" style="display: block; margin-bottom: 5px; color: #64748b; font-size: 14px;">Medication Times</label>
+                    <input type="text" id="scanTimes" class="search-box" style="margin-bottom: 0;" placeholder="e.g., 08:00, 14:00, 20:00">
+                    <p style="font-size: 11px; color: #64748b; margin-top: 5px;">Enter times in 24-hour format, separated by commas</p>
+                </div>
+
+                <button class="btn-primary" style="width: 100%;" onclick="saveScannedMedication()">Save Medication</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Add Caretaker Modal -->
+    <div id="caretakerModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Link Caretaker</h3>
+                <span class="close-modal" onclick="closeCaretakerModal()">×</span>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Caretaker Email</label>
+                    <input type="email" id="caretakerEmail" class="search-box" style="margin-bottom: 0;" placeholder="Enter caretaker's email address">
+                    <p style="font-size: 12px; color: #64748b; margin-top: 5px;">The caretaker must already have an account.</p>
+                </div>
+
+                <div class="form-group" style="margin-top: 20px;">
+                    <label class="form-label">Caretaker Password</label>
+                    <div class="password-wrapper">
+                        <input type="password" id="caretakerPassword" class="search-box" style="margin-bottom: 0; padding-right: 45px;" placeholder="Enter caretaker's password">
+                        <button type="button" class="password-toggle" onclick="togglePassword('caretakerPassword', this)">👁️</button>
+                    </div>
+                    <p style="font-size: 12px; color: #64748b; margin-top: 5px;">Verify the caretaker's credentials to link the account.</p>
+                </div>
+
+                <button class="btn-primary" style="width: 100%;" onclick="addCaretaker()">Link Account</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyA-rCvbivSZeN481tIWUthoGFRUjXRz3PI",
+            authDomain: "meditrack-752c5.firebaseapp.com",
+            projectId: "meditrack-752c5",
+            storageBucket: "meditrack-752c5.firebasestorage.app",
+            messagingSenderId: "1018831194932",
+            appId: "1:1018831194932:web:b50c1a89ebf0d03e503361"
+        };
+        
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        // Toast Notification Function
+        function showToast(message, type = 'info', duration = 4000) {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            
+            const icons = {
+                success: '✓',
+                error: '✕',
+                warning: '⚠',
+                info: 'ℹ'
+            };
+            
+            toast.innerHTML = `
+                <div class="toast-icon">${icons[type] || icons.info}</div>
+                <div class="toast-content">
+                    <div class="toast-message">${message}</div>
+                </div>
+                <div class="toast-close" onclick="this.parentElement.remove()">×</div>
+            `;
+            
+            container.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.animation = 'slideOutRight 0.3s ease';
+                setTimeout(() => toast.remove(), 300);
+            }, duration);
+        }
+
+        // Password Toggle Function
+        function togglePassword(inputId, button) {
+            const input = document.getElementById(inputId);
+            if (input.type === 'password') {
+                input.type = 'text';
+                button.textContent = '🙈';
+            } else {
+                input.type = 'password';
+                button.textContent = '👁️';
+            }
+        }
+
+        // Check authentication and load user data
+        auth.onAuthStateChanged(async (user) => {
+            if (!user) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // Get user data
+            const userDataStr = sessionStorage.getItem('currentUser');
+            if (userDataStr) {
+                const userData = JSON.parse(userDataStr);
+                document.getElementById('userName').textContent = userData.fullName || 'Patient';
+                document.getElementById('userEmail').textContent = userData.email || '';
+                
+                if (userData.userType !== 'patient') {
+                    showToast('Access denied. This is a patient-only area.', 'error');
+                    window.location.href = 'login.html';
+                }
+            }
+            
+            // Load real-time dashboard data
+            loadDashboardData();
+        });
+
+        // Load Dashboard Data
+        async function loadDashboardData() {
+            const user = auth.currentUser;
+            if (!user) return;
+
+            try {
+                const medicationsSnapshot = await db.collection('patients').doc(user.uid).collection('medications').get();
+                const medications = [];
+                medicationsSnapshot.forEach(doc => {
+                    medications.push({ id: doc.id, ...doc.data() });
+                });
+
+                // Update Active Medications Count
+                document.getElementById('activeMedsCount').textContent = medications.length;
+
+                // Calculate Doses Today (Simple heuristic for now)
+                let dosesToday = 0;
+                medications.forEach(med => {
+                    const freq = med.frequency ? med.frequency.toLowerCase() : '';
+                    if (freq.includes('twice')) dosesToday += 2;
+                    else if (freq.includes('thrice')) dosesToday += 3;
+                    else if (freq.includes('daily') || freq.includes('once')) dosesToday += 1;
+                    else dosesToday += 1; // Default
+                });
+                document.getElementById('dosesTodayCount').textContent = dosesToday;
+
+                // Update Schedule List
+                const scheduleList = document.getElementById('scheduleList');
+                if (medications.length === 0) {
+                    scheduleList.innerHTML = '<p style="color: #64748b;">No medications added yet.</p>';
+                } else {
+                    scheduleList.innerHTML = '';
+                    medications.forEach(med => {
+                        const item = document.createElement('div');
+                        item.className = 'medication-card';
+                        item.style.marginBottom = '10px';
+                        item.style.padding = '15px';
+                        item.innerHTML = `
+                            <div class="medication-header" style="margin-bottom: 0;">
+                                <div>
+                                    <div class="medication-name" style="font-size: 16px;">${med.name}</div>
+                                    <div class="medication-details">${med.dosage} • ${med.frequency}</div>
+                                </div>
+                            </div>
+                        `;
+                        scheduleList.appendChild(item);
+                    });
+                }
+
+                // Update Medicines List (in the Medicines page)
+                const medicinesList = document.getElementById('medicinesList');
+                if (medicinesList) {
+                    if (medications.length === 0) {
+                        medicinesList.innerHTML = '<p style="color: #64748b;">No medications added yet.</p>';
+                    } else {
+                        medicinesList.innerHTML = '';
+                        medications.forEach(med => {
+                            const item = document.createElement('div');
+                            item.className = 'medication-card';
+                            item.innerHTML = `
+                                <div class="medication-header">
+                                    <div>
+                                        <div class="medication-name">${med.name}</div>
+                                        <div class="medication-dosage">${med.dosage} • ${med.frequency}</div>
+                                        <div class="medication-stock">Stock: ${med.stock || 0} doses remaining</div>
+                                    </div>
+                                    <button class="delete-btn" onclick="deleteMedication('${med.id}')" style="background: transparent; border: none; color: #ef4444; cursor: pointer; font-size: 14px; padding: 8px 12px; border-radius: 6px; transition: all 0.2s;">Delete</button>
+                                </div>
+                            `;
+                            medicinesList.appendChild(item);
+                        });
+                    }
+                }
+
+                // Check for low stock (Refill Alert)
+                const lowStockMeds = medications.filter(med => (med.stock || 0) < 10);
+                const alertCard = document.getElementById('refillAlertCard');
+                const refillList = document.getElementById('refillList');
+
+                if (lowStockMeds.length > 0) {
+                    alertCard.style.display = 'block';
+                    let alertHtml = `<p class="alert-text">${lowStockMeds.length} medication(s) need refilling:</p>`;
+                    lowStockMeds.forEach(med => {
+                        alertHtml += `<p class="alert-text">• ${med.name} - Only ${med.stock || 0} doses left</p>`;
+                    });
+                    refillList.innerHTML = alertHtml;
+                } else {
+                    alertCard.style.display = 'none';
+                }
+
+                // Load Caregivers
+                const caregiversSnapshot = await db.collection('patients').doc(user.uid).collection('caregivers').get();
+                const caregiversCount = caregiversSnapshot.size;
+                document.getElementById('caregiversCount').textContent = caregiversCount;
+                
+                const caregiversList = document.getElementById('caregiversList');
+                if (caregiversList) {
+                    if (caregiversSnapshot.empty) {
+                        caregiversList.innerHTML = '<p style="color: #64748b;">No caregivers linked.</p>';
+                    } else {
+                        caregiversList.innerHTML = '';
+                        caregiversSnapshot.forEach(doc => {
+                            const caregiver = doc.data();
+                            const card = document.createElement('div');
+                            card.className = 'caregiver-card';
+                            const initials = (caregiver.fullName || 'Unknown').split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
+                            card.innerHTML = `
+                                <div class="caregiver-avatar">${initials}</div>
+                                <div class="caregiver-info">
+                                    <div class="caregiver-name">${caregiver.fullName || 'Unknown'}</div>
+                                    <div class="caregiver-contact">${caregiver.email}</div>
+                                </div>
+                                <div class="caregiver-actions">
+                                    <button class="btn-danger" onclick="deleteCaretaker('${doc.id}')">Remove</button>
+                                </div>
+                            `;
+                            caregiversList.appendChild(card);
+                        });
+                    }
+                }
+                
+                // Start reminder loop if not already started
+                if (!window.reminderInterval) {
+                    startReminderLoop(medications);
+                }
+
+            } catch (error) {
+                console.error('Error loading dashboard data:', error);
+            }
+        }
+
+        // Reminder System
+        function startReminderLoop(medications) {
+            window.reminderInterval = setInterval(() => {
+                const now = new Date();
+                const currentTime = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
+                
+                medications.forEach(med => {
+                    // Check if medication has scheduled times
+                    if (med.times && Array.isArray(med.times) && med.times.length > 0) {
+                        med.times.forEach(scheduledTime => {
+                            if (scheduledTime === currentTime) {
+                                sendNotification(`Time to take ${med.name}`, `Dosage: ${med.dosage || 'As prescribed'}`);
+                            }
+                        });
+                    }
+                });
+            }, 60000); // Check every minute
+        }
+
+        function sendNotification(title, body) {
+            if (Notification.permission === 'granted') {
+                new Notification(title, {
+                    body: body,
+                    icon: '💊',
+                    badge: '💊',
+                    tag: 'medication-reminder',
+                    requireInteraction: true
+                });
+            } else if (Notification.permission !== 'denied') {
+                Notification.requestPermission().then(permission => {
+                    if (permission === 'granted') {
+                        new Notification(title, {
+                            body: body,
+                            icon: '💊'
+                        });
+                    }
+                });
+            }
+        }
+
+        // Page navigation
+        function showPage(pageName) {
+            // Hide all pages
+            document.querySelectorAll('.page-section').forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            // Remove active from all sidebar items
+            document.querySelectorAll('.sidebar-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Show selected page
+            document.getElementById(pageName).classList.add('active');
+            
+            // Add active to clicked sidebar item
+            // Map page names to sidebar items
+            const pageMap = {
+                'home': 0,
+                'add': 1,
+                'search': 2,
+                'caregivers': 3,
+                'scan': 4,
+                'settings': 5
+            };
+            
+            const sidebarItems = document.querySelectorAll('.sidebar-menu .sidebar-item');
+            if (pageMap[pageName] !== undefined && sidebarItems[pageMap[pageName]]) {
+                sidebarItems[pageMap[pageName]].classList.add('active');
+            }
+
+            // Refresh data if going home
+            if (pageName === 'home') {
+                loadDashboardData();
+            }
+        }
+
+        // Logout function
+        async function handleLogout() {
+            try {
+                await auth.signOut();
+                sessionStorage.clear();
+                window.location.href = 'landing.html';
+            } catch (error) {
+                console.error('Logout error:', error);
+                showToast('Error logging out: ' + error.message, 'error');
+            }
+        }
+
+        // Toggle switch function
+        function toggleSwitch(element) {
+            element.classList.toggle('active');
+        }
+
+        // Enable notifications
+        function enableNotifications() {
+            if ('Notification' in window) {
+                Notification.requestPermission().then(permission => {
+                    if (permission === 'granted') {
+                        showToast('Notifications enabled successfully!', 'success');
+                        new Notification('MediTrack', {
+                            body: 'You will now receive medication reminders',
+                            icon: '💊'
+                        });
+                    } else {
+                        showToast('Notification permission denied', 'warning');
+                    }
+                });
+            } else {
+                showToast('This browser does not support notifications', 'warning');
+            }
+        }
+
+        // Handle prescription upload
+        function handlePrescriptionUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const modal = document.getElementById('scanModal');
+                const progressDiv = document.getElementById('scanProgress');
+                const resultForm = document.getElementById('scanResultForm');
+                const imagePreview = document.getElementById('imagePreview');
+                
+                // Reset UI
+                modal.classList.add('active');
+                progressDiv.classList.add('active');
+                resultForm.style.display = 'none';
+                
+                // Show image preview
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    imagePreview.src = e.target.result;
+                    
+                    // Start OCR
+                    Tesseract.recognize(
+                        e.target.result,
+                        'eng',
+                        { 
+                            logger: m => {
+                                if (m.status === 'recognizing text') {
+                                    document.getElementById('progressText').textContent = Math.round(m.progress * 100) + '%';
+                                }
+                            }
+                        }
+                    ).then(({ data: { text } }) => {
+                        console.log('OCR Result:', text);
+                        parseMedicationText(text);
+                        progressDiv.classList.remove('active');
+                        resultForm.style.display = 'block';
+                    }).catch(err => {
+                        console.error('OCR Error:', err);
+                        showToast('Failed to scan image. Please try again.', 'error');
+                        closeModal();
+                    });
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function parseMedicationText(text) {
+            // Simple parsing logic - can be enhanced
+            const lines = text.split('\n').filter(line => line.trim().length > 0);
+            
+            // Try to find medication name (usually first prominent text)
+            // This is a basic heuristic
+            let name = lines[0] || '';
+            
+            // Try to find dosage (look for mg, ml, g)
+            const dosageRegex = /(\d+\s*(?:mg|ml|g|mcg))/i;
+            const dosageMatch = text.match(dosageRegex);
+            let dosage = dosageMatch ? dosageMatch[0] : '';
+
+            // Try to find frequency
+            const frequencyKeywords = ['daily', 'twice', 'thrice', 'every', 'hours', 'morning', 'night', 'bedtime'];
+            let frequency = '';
+            for (const line of lines) {
+                if (frequencyKeywords.some(keyword => line.toLowerCase().includes(keyword))) {
+                    frequency = line;
+                    break;
+                }
+            }
+
+            // Populate form
+            document.getElementById('scanName').value = name;
+            document.getElementById('scanDosage').value = dosage;
+            document.getElementById('scanFrequency').value = frequency;
+        }
+
+        function closeModal() {
+            document.getElementById('scanModal').classList.remove('active');
+            document.getElementById('prescriptionInput').value = ''; // Reset file input
+        }
+
+        async function saveScannedMedication() {
+            const name = document.getElementById('scanName').value;
+            const dosage = document.getElementById('scanDosage').value;
+            const frequency = document.getElementById('scanFrequency').value;
+            const timesInput = document.getElementById('scanTimes').value;
+
+            if (!name) {
+                showToast('Please enter a medication name', 'warning');
+                return;
+            }
+
+            // Parse times input (comma-separated)
+            let times = [];
+            if (timesInput) {
+                times = timesInput.split(',').map(t => t.trim()).filter(t => t);
+            }
+
+            try {
+                const user = auth.currentUser;
+                if (!user) {
+                    showToast('You must be logged in to save medications', 'error');
+                    return;
+                }
+
+                await db.collection('patients').doc(user.uid).collection('medications').add({
+                    name: name,
+                    dosage: dosage,
+                    frequency: frequency,
+                    times: times,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    stock: 30 // Default starting stock
+                });
+
+                showToast('Medication saved successfully!', 'success');
+                closeModal();
+                showPage('home'); // Go to home to see updates
+                loadDashboardData(); // Explicitly reload data
+                
+            } catch (error) {
+                console.error('Error saving medication:', error);
+                showToast('Error saving medication: ' + error.message, 'error');
+            }
+        }
+
+        async function deleteMedication(medId) {
+            if (confirm('Are you sure you want to delete this medication?')) {
+                try {
+                    const user = auth.currentUser;
+                    await db.collection('patients').doc(user.uid).collection('medications').doc(medId).delete();
+                    loadDashboardData(); // Refresh data
+                } catch (error) {
+                    console.error('Error deleting medication:', error);
+                    showToast('Error deleting medication', 'error');
+                }
+            }
+        }
+
+        // Caretaker Management
+        function openCaretakerModal() {
+            document.getElementById('caretakerModal').classList.add('active');
+        }
+
+        function closeCaretakerModal() {
+            document.getElementById('caretakerModal').classList.remove('active');
+            document.getElementById('caretakerEmail').value = '';
+            document.getElementById('caretakerPassword').value = '';
+        }
+
+        async function addCaretaker() {
+            const email = document.getElementById('caretakerEmail').value.trim();
+            const password = document.getElementById('caretakerPassword').value;
+
+            if (!email) {
+                showToast('Please enter an email address', 'warning');
+                return;
+            }
+
+            if (!password) {
+                showToast('Please enter a password', 'warning');
+                return;
+            }
+
+            // Store current patient info before switching sessions
+            const currentPatient = auth.currentUser;
+            if (!currentPatient) {
+                showToast('You must be logged in to add a caretaker.', 'error');
+                window.location.href = 'login.html';
+                return;
+            }
+            const patientUid = currentPatient.uid;
+            const patientEmail = currentPatient.email;
+
+            try {
+                // 1. Verify caretaker credentials using Firebase Auth
+                let caretakerAuthUser = null;
+                try {
+                    caretakerAuthUser = await auth.signInWithEmailAndPassword(email, password);
+                } catch (authError) {
+                    // If verification fails, we're still signed in as patient, so no need to restore
+                    if (authError.code === 'auth/user-not-found') {
+                        showToast('No user found with this email.', 'error');
+                    } else if (authError.code === 'auth/wrong-password') {
+                        showToast('Incorrect password. Please try again.', 'error');
+                    } else if (authError.code === 'auth/invalid-email') {
+                        showToast('Invalid email address format.', 'error');
+                    } else {
+                        showToast('Authentication failed: ' + authError.message, 'error');
+                    }
+                    // Try to restore patient session if we lost it
+                    if (auth.currentUser?.uid !== patientUid) {
+                        // We need to sign back in, but we don't have the password
+                        // In a production app, you'd use a Cloud Function for this
+                        showToast('Please log in again to continue.', 'warning');
+                        window.location.href = 'login.html';
+                    }
+                    return;
+                }
+
+                const caretakerUid = caretakerAuthUser.user.uid;
+
+                // 2. Verify user type and get full caretaker data
+                const userDoc = await db.collection('users').doc(caretakerUid).get();
+                if (!userDoc.exists) {
+                    await auth.signOut();
+                    showToast('User data not found. Please log in again.', 'error');
+                    window.location.href = 'login.html';
+                    return;
+                }
+
+                const userData = userDoc.data();
+                if (userData.userType !== 'caretaker') {
+                    await auth.signOut();
+                    showToast('This user is not registered as a caretaker. Please log in again.', 'error');
+                    window.location.href = 'login.html';
+                    return;
+                }
+
+                // 3. Get full caretaker data from caretakers collection
+                const caretakerDoc = await db.collection('caretakers').doc(caretakerUid).get();
+                if (!caretakerDoc.exists) {
+                    await auth.signOut();
+                    showToast('Caretaker profile not found. Please log in again.', 'error');
+                    window.location.href = 'login.html';
+                    return;
+                }
+
+                const caretakerData = caretakerDoc.data();
+
+                // 4. Add to patient's caregivers subcollection using the stored patient UID
+                // We can do this even while signed in as caretaker if Firestore rules allow
+                // Or we sign out first and use the patient's UID directly
+                await db.collection('patients').doc(patientUid).collection('caregivers').doc(caretakerUid).set({
+                    email: caretakerData.email,
+                    fullName: caretakerData.fullName || 'Unknown',
+                    addedAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
+                // 5. Sign out the temporary caretaker session
+                await auth.signOut();
+
+                // 6. Inform user they need to log in again
+                showToast('Caretaker linked successfully! Please log in again to continue.', 'success');
+                closeCaretakerModal();
+                window.location.href = 'login.html';
+
+            } catch (error) {
+                console.error('Error adding caretaker:', error);
+                showToast('Error adding caretaker: ' + error.message, 'error');
+                
+                // Ensure we handle auth state properly
+                if (auth.currentUser?.uid !== patientUid) {
+                    showToast('Please log in again to continue.', 'warning');
+                    window.location.href = 'login.html';
+                }
+            }
+        }
+
+        async function deleteCaretaker(caretakerId) {
+            if (confirm('Are you sure you want to remove this caretaker?')) {
+                try {
+                    const user = auth.currentUser;
+                    await db.collection('patients').doc(user.uid).collection('caregivers').doc(caretakerId).delete();
+                    loadDashboardData();
+                } catch (error) {
+                    console.error('Error removing caretaker:', error);
+                    showToast('Error removing caretaker', 'error');
+                }
+            }
+        }
+
+
+        // Medication Search (OpenFDA)
+        function handleSearchKeyPress(event) {
+            if (event.key === 'Enter') {
+                searchMedications();
+            }
+        }
+
+        async function searchMedications() {
+            const query = document.getElementById('drugSearchInput').value.trim();
+            const resultsDiv = document.getElementById('searchResults');
+            
+            if (!query) {
+                showToast('Please enter a medication name', 'warning');
+                return;
+            }
+
+            resultsDiv.innerHTML = '<div class="spinner"></div><p style="text-align: center; color: #64748b;">Searching FDA database...</p>';
+
+            try {
+                // OpenFDA API endpoint
+                const response = await fetch(`https://api.fda.gov/drug/label.json?search=openfda.brand_name:"${query}"&limit=5`);
+                const data = await response.json();
+
+                if (data.error) {
+                    resultsDiv.innerHTML = `
+                        <div style="text-align: center; color: #64748b; margin-top: 40px;">
+                            <div style="font-size: 40px; margin-bottom: 10px;">😕</div>
+                            <p>No results found for "${query}".<br>Try searching for the brand name (e.g., "Tylenol" instead of "Acetaminophen").</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                resultsDiv.innerHTML = '';
+                
+                data.results.forEach(drug => {
+                    const brandName = drug.openfda?.brand_name ? drug.openfda.brand_name[0] : 'Unknown Brand';
+                    const genericName = drug.openfda?.generic_name ? drug.openfda.generic_name[0] : 'Unknown Generic';
+                    
+                    // Extract sections (handling variations in field names)
+                    const indications = drug.indications_and_usage ? drug.indications_and_usage[0] : (drug.purpose ? drug.purpose[0] : 'No information available.');
+                    const warnings = drug.warnings ? drug.warnings[0] : (drug.boxed_warning ? drug.boxed_warning[0] : null);
+                    const dosage = drug.dosage_and_administration ? drug.dosage_and_administration[0] : 'Consult your doctor.';
+
+                    // Truncate long text
+                    const truncate = (str, length) => str.length > length ? str.substring(0, length) + '...' : str;
+
+                    const card = document.createElement('div');
+                    card.className = 'drug-card';
+                    card.innerHTML = `
+                        <div class="drug-header">
+                            <div>
+                                <div class="drug-brand">${brandName}</div>
+                                <div class="drug-generic">${genericName}</div>
+                            </div>
+                            ${warnings ? '<div class="warning-badge">⚠️ Has Warnings</div>' : ''}
+                        </div>
+                        
+                        <div class="drug-section">
+                            <div class="drug-section-title">Indications & Usage</div>
+                            <div class="drug-text">${truncate(indications, 200)}</div>
+                        </div>
+
+                        ${warnings ? `
+                        <div class="drug-section">
+                            <div class="drug-section-title" style="color: #dc2626;">Important Warnings</div>
+                            <div class="drug-text" style="color: #b91c1c;">${truncate(warnings, 150)}</div>
+                        </div>
+                        ` : ''}
+
+                        <div class="drug-section">
+                            <div class="drug-section-title">Dosage Info</div>
+                            <div class="drug-text">${truncate(dosage, 150)}</div>
+                        </div>
+                    `;
+                    resultsDiv.appendChild(card);
+                });
+
+            } catch (error) {
+                console.error('Search error:', error);
+                resultsDiv.innerHTML = `
+                    <div style="text-align: center; color: #ef4444; margin-top: 40px;">
+                        <p>Error connecting to FDA database.<br>Please try again later.</p>
+                    </div>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,1019 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Caretaker Dashboard - MediTrack</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #e0e7ff 0%, #f3e8ff 100%);
+            min-height: 100vh;
+            display: flex;
+        }
+
+        .sidebar {
+            width: 260px;
+            background: #4f46e5;
+            display: flex;
+            flex-direction: column;
+            padding: 0;
+            position: fixed;
+            height: 100vh;
+            left: 0;
+            top: 0;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar-header {
+            padding: 30px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-header h2 {
+            color: white;
+            font-size: 24px;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .sidebar-menu {
+            flex: 1;
+            padding: 20px 0;
+            overflow-y: auto;
+        }
+
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            padding: 16px 24px;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 15px;
+            font-weight: 500;
+            border-left: 4px solid transparent;
+        }
+
+        .sidebar-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .sidebar-item.active {
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            border-left-color: white;
+            font-weight: 600;
+        }
+
+        .sidebar-item-icon {
+            width: 8px;
+            height: 8px;
+            margin-right: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 8px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .sidebar-item.active .sidebar-item-icon {
+            background: white;
+        }
+
+        .sidebar-item-text {
+            flex: 1;
+        }
+
+        .sidebar-footer {
+            padding: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-item.logout {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .sidebar-item.logout:hover {
+            background: rgba(239, 68, 68, 0.2);
+            color: #fee2e2;
+        }
+
+        .main-content {
+            margin-left: 260px;
+            flex: 1;
+            padding: 40px;
+            max-width: 1200px;
+        }
+
+        .header {
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            color: #64748b;
+            font-size: 16px;
+        }
+
+        .page-section {
+            display: none;
+        }
+
+        .page-section.active {
+            display: block;
+        }
+
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 28px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            border: 1px solid #f1f5f9;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 80px 40px;
+        }
+
+        .empty-state-icon {
+            width: 120px;
+            height: 120px;
+            background: #e0e7ff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+            font-size: 48px;
+            color: #4f46e5;
+        }
+
+        .empty-state h2 {
+            font-size: 24px;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 12px;
+        }
+
+        .empty-state p {
+            color: #64748b;
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 32px;
+        }
+
+        .patient-info-card {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            border-radius: 20px;
+            padding: 32px;
+            margin-bottom: 32px;
+            color: white;
+            box-shadow: 0 8px 24px rgba(99, 102, 241, 0.25);
+        }
+
+        .patient-info-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .patient-avatar {
+            width: 70px;
+            height: 70px;
+            background: rgba(255, 255, 255, 0.25);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            font-weight: 700;
+            color: white;
+            flex-shrink: 0;
+            backdrop-filter: blur(10px);
+        }
+
+        .patient-details {
+            flex: 1;
+        }
+
+        .patient-name {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .patient-email {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 32px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 24px;
+            border-radius: 16px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e2e8f0;
+        }
+
+        .stat-card h4 {
+            font-size: 14px;
+            color: #64748b;
+            margin: 0 0 12px 0;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-value {
+            font-size: 36px;
+            font-weight: 700;
+            color: #1e293b;
+            margin: 0;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .section-header h2 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        .medication-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            border: 1px solid #e2e8f0;
+            transition: all 0.2s;
+        }
+
+        .medication-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            transform: translateY(-2px);
+        }
+
+        .medication-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .medication-name {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 6px;
+        }
+
+        .medication-dosage,
+        .medication-details {
+            color: #64748b;
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .medication-stock {
+            color: #64748b;
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+
+        .low-stock-badge {
+            background: #fee2e2;
+            color: #dc2626;
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+            margin-top: 8px;
+        }
+
+        .history-table {
+            width: 100%;
+            margin-top: 24px;
+            border-collapse: collapse;
+        }
+
+        .history-table th {
+            text-align: left;
+            color: #64748b;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            padding: 12px 0;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .history-table td {
+            padding: 16px 0;
+            color: #1e293b;
+            font-size: 14px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .status-badge {
+            background: #d1fae5;
+            color: #059669;
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-badge.missed {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .status-badge.pending {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .btn-primary {
+            background: #4f46e5;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .btn-primary:hover {
+            background: #4338ca;
+            transform: translateY(-2px);
+        }
+
+        .alert-card {
+            background: #fef2f2;
+            border-left: 4px solid #ef4444;
+        }
+
+        .alert-card h3 {
+            color: #dc2626;
+            font-size: 18px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .alert-text {
+            color: #991b1b;
+            font-size: 14px;
+            margin-left: 34px;
+        }
+
+        .profile-section {
+            margin-top: 24px;
+        }
+
+        .profile-item {
+            padding: 16px 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .profile-item:last-child {
+            border-bottom: none;
+        }
+
+        .profile-label {
+            color: #64748b;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .profile-value {
+            color: #1e293b;
+            font-size: 16px;
+        }
+        .profile-value {
+            color: #1e293b;
+            font-size: 16px;
+        }
+
+        /* Toast Notification Styles */
+        .toast-container {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .toast {
+            background: white;
+            border-radius: 12px;
+            padding: 16px 20px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            min-width: 320px;
+            max-width: 400px;
+            display: flex;
+            align-items: start;
+            gap: 12px;
+            animation: slideInRight 0.3s ease;
+            border-left: 4px solid #4f46e5;
+        }
+
+        .toast.success {
+            border-left-color: #10b981;
+        }
+
+        .toast.error {
+            border-left-color: #ef4444;
+        }
+
+        .toast-icon {
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .toast-content {
+            flex: 1;
+        }
+
+        .toast-message {
+            color: #64748b;
+            font-size: 13px;
+            line-height: 1.4;
+        }
+
+        .toast-close {
+            color: #94a3b8;
+            cursor: pointer;
+            font-size: 20px;
+            line-height: 1;
+            padding: 0 4px;
+            transition: color 0.2s;
+        }
+
+        .toast-close:hover {
+            color: #64748b;
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOutRight {
+            from {
+                transform: translateX(0);
+               opacity: 1;
+            }
+            to {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+        }
+    </style>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h2>MediTrack</h2>
+        </div>
+        <div class="sidebar-menu">
+            <div class="sidebar-item active" onclick="showPage('overview')">
+                <div class="sidebar-item-icon">■</div>
+                <div class="sidebar-item-text">Patient Overview</div>
+            </div>
+            <div class="sidebar-item" onclick="showPage('medications')">
+                <div class="sidebar-item-icon">■</div>
+                <div class="sidebar-item-text">Medications</div>
+            </div>
+            <div class="sidebar-item" onclick="showPage('logs')">
+                <div class="sidebar-item-icon">■</div>
+                <div class="sidebar-item-text">Dose Logs</div>
+            </div>
+            <div class="sidebar-item" onclick="showPage('profile')">
+                <div class="sidebar-item-icon">■</div>
+                <div class="sidebar-item-text">My Profile</div>
+            </div>
+        </div>
+        <div class="sidebar-footer">
+            <div class="sidebar-item logout" onclick="handleLogout()">
+                <div class="sidebar-item-icon">■</div>
+                <div class="sidebar-item-text">Logout</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="header">
+            <h1>Caretaker Dashboard</h1>
+            <p>Monitor and manage patient care</p>
+        </div>
+
+        <!-- Overview Page -->
+        <div id="overview" class="page-section active">
+            <div id="noPatientState" class="card empty-state" style="display: none;">
+                <div class="empty-state-icon">👤</div>
+                <h2>No Patient Connected</h2>
+                <p>Connect your account to the patient's account to start monitoring their health and medications.</p>
+            </div>
+
+            <div id="patientContent" style="display: none;">
+                <!-- Patient Info Card -->
+                <div class="patient-info-card">
+                    <div class="patient-info-header">
+                        <div style="display: flex; align-items: center;">
+                            <div class="patient-avatar" id="patientAvatar">P</div>
+                            <div class="patient-details">
+                                <div class="patient-name" id="patientName">Loading...</div>
+                                <div class="patient-email" id="patientEmail">Loading...</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stats Grid -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h4>Active Medications</h4>
+                        <div class="stat-value" style="color: #4f46e5;" id="activeMedsCount">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <h4>Doses Today</h4>
+                        <div class="stat-value" style="color: #10b981;" id="dosesTodayCount">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <h4>Upcoming Doses</h4>
+                        <div class="stat-value" style="color: #8b5cf6;" id="upcomingDosesCount">0</div>
+                    </div>
+                </div>
+
+                <!-- Refill Alert -->
+                <div id="refillAlertCard" class="card alert-card" style="display: none;">
+                    <h3>Refill Alert</h3>
+                    <div id="refillList"></div>
+                </div>
+
+                <!-- Today's Schedule -->
+                <div class="card">
+                    <h3 style="margin-bottom: 12px; font-size: 20px; color: #1e293b;">Today's Schedule</h3>
+                    <div id="scheduleList">
+                        <p style="color: #64748b;">Loading schedule...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Medications Page -->
+        <div id="medications" class="page-section">
+            <div class="section-header">
+                <h2>Patient Medications</h2>
+            </div>
+
+            <div id="medicationsList">
+                <p style="color: #64748b;">Loading medications...</p>
+            </div>
+        </div>
+
+        <!-- Dose Logs Page -->
+        <div id="logs" class="page-section">
+            <div class="section-header">
+                <h2>Dose History</h2>
+            </div>
+
+            <div class="card">
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th>Medication</th>
+                            <th>Date & Time</th>
+                            <th>Dosage</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="doseHistoryTable">
+                        <tr>
+                            <td colspan="4" style="text-align: center; color: #64748b; padding: 40px;">Loading dose history...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Profile Page -->
+        <div id="profile" class="page-section">
+            <div class="section-header">
+                <h2>My Profile</h2>
+            </div>
+
+            <div class="card">
+                <div class="profile-section">
+                    <div class="profile-item">
+                        <div class="profile-label">Full Name</div>
+                        <div class="profile-value" id="caretakerName">Loading...</div>
+                    </div>
+                    <div class="profile-item">
+                        <div class="profile-label">Email</div>
+                        <div class="profile-value" id="caretakerEmail">Loading...</div>
+                    </div>
+                    <div class="profile-item">
+                        <div class="profile-label">User Type</div>
+                        <div class="profile-value">Caretaker</div>
+                    </div>
+                    <div class="profile-item">
+                        <div class="profile-label">Connected Patient</div>
+                        <div class="profile-value" id="connectedPatient">Loading...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+        </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script>
+        // Initialize Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyA-rCvbivSZeN481tIWUthoGFRUjXRz3PI",
+            authDomain: "meditrack-752c5.firebaseapp.com",
+            projectId: "meditrack-752c5",
+            storageBucket: "meditrack-752c5.firebasestorage.app",
+            messagingSenderId: "1018831194932",
+            appId: "1:1018831194932:web:b50c1a89ebf0d03e503361"
+        };
+        
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        let currentPatientUid = null;
+        let currentPatientData = null;
+
+        // Toast Notification Function
+        function showToast(message, type = 'info', duration = 4000) {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            
+            const icons = {
+                success: '✓',
+                error: '✕',
+                info: 'ℹ'
+            };
+            
+            toast.innerHTML = `
+                <div class="toast-icon">${icons[type] || icons.info}</div>
+                <div class="toast-content">
+                    <div class="toast-message">${message}</div>
+                </div>
+                <div class="toast-close" onclick="this.parentElement.remove()">×</div>
+            `;
+            
+            container.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.animation = 'slideOutRight 0.3s ease';
+                setTimeout(() => toast.remove(), 300);
+            }, duration);
+        }
+
+        // Check authentication and load data
+        auth.onAuthStateChanged(async (user) => {
+            if (!user) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // Verify user type
+            const userDoc = await db.collection('users').doc(user.uid).get();
+            if (userDoc.exists) {
+                const userData = userDoc.data();
+                if (userData.userType !== 'caretaker') {
+                    showToast('Access denied. This is a caretaker-only area.', 'error');
+                    window.location.href = 'login.html';
+                    return;
+                }
+            }
+
+            // Load caretaker profile
+            await loadCaretakerProfile(user.uid);
+            
+            // Find connected patient
+            await findConnectedPatient(user.uid);
+            
+            // Load patient data if connected
+            if (currentPatientUid) {
+                await loadPatientData();
+            } else {
+                showNoPatientState();
+            }
+        });
+
+        async function loadCaretakerProfile(caretakerUid) {
+            try {
+                const caretakerDoc = await db.collection('caretakers').doc(caretakerUid).get();
+                if (caretakerDoc.exists) {
+                    const data = caretakerDoc.data();
+                    document.getElementById('caretakerName').textContent = data.fullName || 'Caretaker';
+                    document.getElementById('caretakerEmail').textContent = data.email || '';
+                }
+            } catch (error) {
+                console.error('Error loading caretaker profile:', error);
+            }
+        }
+
+        async function findConnectedPatient(caretakerUid) {
+            try {
+                // Query all patients to find one that has this caretaker in their caregivers subcollection
+                const patientsSnapshot = await db.collection('patients').get();
+                
+                for (const patientDoc of patientsSnapshot.docs) {
+                    const caregiverDoc = await db.collection('patients').doc(patientDoc.id)
+                        .collection('caregivers').doc(caretakerUid).get();
+                    
+                    if (caregiverDoc.exists) {
+                        currentPatientUid = patientDoc.id;
+                        currentPatientData = patientDoc.data();
+                        break;
+                    }
+                }
+            } catch (error) {
+                console.error('Error finding connected patient:', error);
+            }
+        }
+
+        function showNoPatientState() {
+            document.getElementById('noPatientState').style.display = 'block';
+            document.getElementById('patientContent').style.display = 'none';
+            document.getElementById('connectedPatient').textContent = 'None';
+        }
+
+        async function loadPatientData() {
+            if (!currentPatientUid) {
+                showNoPatientState();
+                return;
+            }
+
+            document.getElementById('noPatientState').style.display = 'none';
+            document.getElementById('patientContent').style.display = 'block';
+            document.getElementById('connectedPatient').textContent = currentPatientData.fullName || 'Unknown';
+
+            try {
+                // Load patient info
+                const initials = (currentPatientData.fullName || 'P').split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
+                document.getElementById('patientAvatar').textContent = initials;
+                document.getElementById('patientName').textContent = currentPatientData.fullName || 'Patient';
+                document.getElementById('patientEmail').textContent = currentPatientData.email || '';
+
+                // Load medications
+                const medicationsSnapshot = await db.collection('patients').doc(currentPatientUid)
+                    .collection('medications').get();
+                const medications = [];
+                medicationsSnapshot.forEach(doc => {
+                    medications.push({ id: doc.id, ...doc.data() });
+                });
+
+                // Update stats
+                document.getElementById('activeMedsCount').textContent = medications.length;
+
+                let dosesToday = 0;
+                medications.forEach(med => {
+                    const freq = med.frequency ? med.frequency.toLowerCase() : '';
+                    if (freq.includes('twice')) dosesToday += 2;
+                    else if (freq.includes('thrice')) dosesToday += 3;
+                    else if (freq.includes('daily') || freq.includes('once')) dosesToday += 1;
+                    else dosesToday += 1;
+                });
+                document.getElementById('dosesTodayCount').textContent = dosesToday;
+                document.getElementById('upcomingDosesCount').textContent = dosesToday;
+
+                // Update schedule list
+                const scheduleList = document.getElementById('scheduleList');
+                if (medications.length === 0) {
+                    scheduleList.innerHTML = '<p style="color: #64748b;">No medications added yet.</p>';
+                } else {
+                    scheduleList.innerHTML = '';
+                    medications.forEach(med => {
+                        const item = document.createElement('div');
+                        item.className = 'medication-card';
+                        item.style.marginBottom = '10px';
+                        item.innerHTML = `
+                            <div class="medication-header" style="margin-bottom: 0;">
+                                <div>
+                                    <div class="medication-name" style="font-size: 16px;">${med.name}</div>
+                                    <div class="medication-details">${med.dosage} • ${med.frequency}</div>
+                                </div>
+                            </div>
+                        `;
+                        scheduleList.appendChild(item);
+                    });
+                }
+
+                // Update medications list
+                const medicinesList = document.getElementById('medicinesList');
+                if (medicinesList) {
+                    if (medications.length === 0) {
+                        medicinesList.innerHTML = '<p style="color: #64748b;">No medications added yet.</p>';
+                    } else {
+                        medicinesList.innerHTML = '';
+                        medications.forEach(med => {
+                            const item = document.createElement('div');
+                            item.className = 'medication-card';
+                            const stockStatus = (med.stock || 0) < 10 ? '<div class="low-stock-badge">Low Stock</div>' : '';
+                            item.innerHTML = `
+                                <div class="medication-header">
+                                    <div>
+                                        <div class="medication-name">${med.name}</div>
+                                        <div class="medication-dosage">${med.dosage} • ${med.frequency}</div>
+                                        <div class="medication-stock">Stock: ${med.stock || 0} doses remaining</div>
+                                        ${stockStatus}
+                                    </div>
+                                </div>
+                            `;
+                            medicinesList.appendChild(item);
+                        });
+                    }
+                }
+
+                // Check for low stock
+                const lowStockMeds = medications.filter(med => (med.stock || 0) < 10);
+                const alertCard = document.getElementById('refillAlertCard');
+                const refillList = document.getElementById('refillList');
+
+                if (lowStockMeds.length > 0) {
+                    alertCard.style.display = 'block';
+                    let alertHtml = `<p class="alert-text">${lowStockMeds.length} medication(s) need refilling:</p>`;
+                    lowStockMeds.forEach(med => {
+                        alertHtml += `<p class="alert-text">• ${med.name} - Only ${med.stock || 0} doses left</p>`;
+                    });
+                    refillList.innerHTML = alertHtml;
+                } else {
+                    alertCard.style.display = 'none';
+                }
+
+                // Load dose history (placeholder - you can implement actual dose logging)
+                const doseHistoryTable = document.getElementById('doseHistoryTable');
+                if (doseHistoryTable) {
+                    // For now, show a message that dose history will be tracked
+                    doseHistoryTable.innerHTML = `
+                        <tr>
+                            <td colspan="4" style="text-align: center; color: #64748b; padding: 40px;">
+                                Dose history will be tracked here as medications are taken.
+                            </td>
+                        </tr>
+                    `;
+                }
+
+                // Start reminder loop for caretaker
+                if (!window.caretakerReminderInterval) {
+                    startCaretakerReminderLoop(medications, currentPatientData.fullName || 'Patient');
+                }
+
+            } catch (error) {
+                console.error('Error loading patient data:', error);
+            }
+        }
+
+        // Caretaker Reminder System
+        function startCaretakerReminderLoop(medications, patientName) {
+            window.caretakerReminderInterval = setInterval(() => {
+                const now = new Date();
+                const currentTime = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
+                
+                medications.forEach(med => {
+                    // Check if medication has scheduled times
+                    if (med.times && Array.isArray(med.times) && med.times.length > 0) {
+                        med.times.forEach(scheduledTime => {
+                            if (scheduledTime === currentTime) {
+                                sendCaretakerNotification(
+                                    `Medication Reminder for ${patientName}`,
+                                    `Time to give ${med.name} (${med.dosage || 'As prescribed'})`
+                                );
+                            }
+                        });
+                    }
+                });
+            }, 60000); // Check every minute
+        }
+
+        function sendCaretakerNotification(title, body) {
+            if (Notification.permission === 'granted') {
+                new Notification(title, {
+                    body: body,
+                    icon: '💊',
+                    badge: '👨‍⚕️',
+                    tag: 'caretaker-medication-reminder',
+                    requireInteraction: true
+                });
+            } else if (Notification.permission !== 'denied') {
+                Notification.requestPermission().then(permission => {
+                    if (permission === 'granted') {
+                        new Notification(title, {
+                            body: body,
+                            icon: '💊'
+                        });
+                    }
+                });
+            }
+        }
+
+        // Page navigation
+        function showPage(pageName) {
+            // Hide all pages
+            document.querySelectorAll('.page-section').forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            // Remove active from all sidebar items
+            document.querySelectorAll('.sidebar-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Show selected page
+            document.getElementById(pageName).classList.add('active');
+            
+            // Add active to clicked sidebar item
+            const pageMap = {
+                'overview': 0,
+                'medications': 1,
+                'logs': 2,
+                'profile': 3
+            };
+            
+            const sidebarItems = document.querySelectorAll('.sidebar-menu .sidebar-item');
+            if (pageMap[pageName] !== undefined && sidebarItems[pageMap[pageName]]) {
+                sidebarItems[pageMap[pageName]].classList.add('active');
+            }
+
+            // Reload data if going to overview or medications
+            if ((pageName === 'overview' || pageName === 'medications') && currentPatientUid) {
+                loadPatientData();
+            }
+        }
+
+        // Logout function
+        async function handleLogout() {
+            try {
+                await auth.signOut();
+                sessionStorage.clear();
+                window.location.href = 'landing.html';
+            } catch (error) {
+                console.error('Logout error:', error);
+                showToast('Error logging out: ' + error.message, 'error');
+            }
+        }
+    </script>
+</body>
+</html>

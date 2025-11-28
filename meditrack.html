@@ -1,0 +1,1058 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediTrack - Your Health Companion</title>
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --primary-color: #009688;
+            --primary-hover: #00796b;
+            --text-color: #333333;
+            --text-light: #666666;
+            --border-color: #e0e0e0;
+            --bg-color: #000000;
+            --font-family: 'Inter', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Landing Page Styles */
+        .landing-page {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .landing-header {
+            padding: 20px 60px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #000;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .landing-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .landing-logo h1 {
+            color: var(--primary-color);
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .landing-tagline {
+            color: var(--text-light);
+            font-size: 13px;
+            margin-left: 12px;
+        }
+
+        .landing-header-buttons {
+            display: flex;
+            gap: 16px;
+        }
+
+        .landing-hero {
+            flex: 1;
+            display: flex;
+            align-items: stretch;
+        }
+
+        .hero-content {
+            flex: 1;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 80px 60px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .hero-content h2 {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            line-height: 1.4;
+        }
+
+        .hero-features {
+            margin-top: 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .hero-feature {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 16px;
+        }
+
+        .hero-feature i {
+            font-size: 8px;
+        }
+
+        .hero-image {
+            flex: 1;
+            background-image: url('https://img.freepik.com/free-photo/medicine-capsules-global-health-with-geometric-pattern-digital-remix_53876-126742.jpg?semt=ais_hybrid&w=740&q=80');
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        /* Signup Options Modal */
+        .signup-options-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .signup-options-content {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+        }
+
+        .signup-options-content h2 {
+            color: var(--primary-color);
+            font-size: 24px;
+            margin-bottom: 12px;
+        }
+
+        .signup-options-content p {
+            color: var(--text-light);
+            font-size: 14px;
+            margin-bottom: 32px;
+        }
+
+        .signup-option-btn {
+            width: 100%;
+            padding: 16px;
+            margin-bottom: 16px;
+            border: 2px solid var(--primary-color);
+            background: white;
+            color: var(--primary-color);
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .signup-option-btn:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .signup-option-btn i {
+            margin-right: 8px;
+        }
+
+        /* Header */
+        header {
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #000;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .header-logo {
+            color: var(--primary-color);
+            font-size: 24px;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .btn {
+            padding: 10px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-block;
+            border: none;
+        }
+
+        .btn-outline {
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            background: transparent;
+        }
+
+        .btn-outline:hover {
+            background-color: #e0f2f1;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+            border: 2px solid var(--primary-color);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+            border-color: var(--primary-hover);
+        }
+
+        /* Main Content */
+        main {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+            background-color: #000;
+        }
+
+        .login-card {
+            width: 100%;
+            max-width: 480px;
+            padding: 40px;
+            border: 1px solid #f0f0f0;
+            border-radius: 12px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.02);
+            text-align: center;
+            background: #000;
+        }
+
+        /* Sign Up Form Specific Styles */
+        .signup-card {
+            width: 100%;
+            max-width: 540px;
+            padding: 40px;
+            border: 1px solid #f0f0f0;
+            border-radius: 12px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.02);
+            text-align: left;
+            background: #000;
+        }
+
+        .signup-header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .signup-header .brand-title {
+            color: var(--primary-color);
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .signup-header .subtitle {
+            color: var(--text-light);
+            font-size: 13px;
+        }
+
+        .top-link {
+            text-align: right;
+            margin-bottom: 16px;
+            font-size: 12px;
+        }
+
+        .top-link a {
+            color: var(--primary-color);
+            text-decoration: none;
+            margin-left: 8px;
+        }
+
+        .section-title {
+            color: var(--primary-color);
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            margin-top: 32px;
+        }
+
+        .section-title:first-of-type {
+            margin-top: 0;
+        }
+
+        .brand-title {
+            color: var(--primary-color);
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .welcome-text {
+            color: var(--text-light);
+            font-size: 14px;
+            margin-bottom: 32px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-color);
+        }
+
+        .label-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .forgot-password {
+            color: var(--primary-color);
+            font-size: 12px;
+            text-decoration: none;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-wrapper i {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+            font-size: 14px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 12px 12px 40px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 14px;
+            color: var(--text-color);
+            font-family: var(--font-family);
+            transition: border-color 0.2s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 12px 12px 12px 40px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 14px;
+            color: var(--text-color);
+            font-family: var(--font-family);
+            transition: border-color 0.2s;
+            background-color: white;
+            cursor: pointer;
+        }
+
+        .form-select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .form-textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 14px;
+            color: var(--text-color);
+            font-family: var(--font-family);
+            transition: border-color 0.2s;
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .form-textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .helper-text {
+            font-size: 11px;
+            color: var(--text-light);
+            margin-top: 6px;
+        }
+
+        .info-box {
+            background-color: #f9fafb;
+            border-left: 3px solid var(--primary-color);
+            padding: 16px;
+            margin: 24px 0;
+            border-radius: 4px;
+        }
+
+        .info-box p {
+            font-size: 12px;
+            color: var(--text-color);
+            line-height: 1.6;
+            margin-bottom: 8px;
+        }
+
+        .info-box p:last-child {
+            margin-bottom: 0;
+        }
+
+        .checkbox-group {
+            margin: 24px 0;
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            font-size: 12px;
+            color: var(--text-color);
+            cursor: pointer;
+        }
+
+        .checkbox-label input[type="checkbox"] {
+            margin-top: 2px;
+            cursor: pointer;
+        }
+
+        .checkbox-label a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .btn-block {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+
+        .signup-prompt {
+            margin-top: 24px;
+            font-size: 12px;
+            color: var(--text-light);
+            text-align: center;
+        }
+
+        .signup-prompt a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .upload-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            background-color: transparent;
+            color: var(--primary-color);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .upload-btn:hover {
+            background-color: #e0f2f1;
+            border-color: var(--primary-color);
+        }
+
+        .upload-btn i {
+            font-size: 14px;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #f9fafb;
+            padding: 60px 40px 20px;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-brand {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .footer-logo-icon {
+            color: var(--primary-color);
+            font-size: 24px;
+            margin-bottom: 16px;
+        }
+
+        .footer-desc {
+            font-size: 13px;
+            color: var(--text-light);
+            line-height: 1.6;
+            max-width: 300px;
+            margin-bottom: 20px;
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 16px;
+        }
+
+        .social-icons a {
+            color: var(--text-light);
+            font-size: 18px;
+            transition: color 0.2s;
+        }
+
+        .social-icons a:hover {
+            color: var(--primary-color);
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 80px;
+        }
+
+        .link-column h4 {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--text-color);
+        }
+
+        .link-column ul {
+            list-style: none;
+        }
+
+        .link-column ul li {
+            margin-bottom: 12px;
+        }
+
+        .link-column ul li a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-size: 13px;
+            transition: color 0.2s;
+        }
+
+        .link-column ul li a:hover {
+            color: var(--primary-color);
+        }
+
+        .footer-bottom {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding-top: 20px;
+            border-top: 1px solid #e5e7eb;
+            text-align: center;
+            font-size: 12px;
+            color: #9ca3af;
+        }
+
+        @media (max-width: 768px) {
+            .landing-hero {
+                flex-direction: column;
+            }
+
+            .hero-image {
+                min-height: 300px;
+            }
+
+            .landing-header {
+                padding: 20px 30px;
+            }
+
+            .hero-content {
+                padding: 60px 30px;
+            }
+
+            .footer-content {
+                flex-direction: column;
+            }
+
+            .footer-links {
+                flex-direction: column;
+                gap: 30px;
+            }
+
+            .signup-card {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Landing Page -->
+    <div class="landing-page" id="landingPage">
+        <div class="landing-header">
+            <div class="landing-logo">
+                <h1>MediTrack</h1>
+            
+            </div>
+            <div class="landing-header-buttons">
+                <button class="btn btn-outline" onclick="showLogin()">Login</button>
+                <button class="btn btn-primary" onclick="showSignupOptions()">Sign Up</button>
+            </div>
+        </div>
+        <div class="landing-hero">
+            <div class="hero-content">
+                <h2>MediTrack is here to support you every day<br>—so you stay healthy, confident, and stress-free.</h2>
+                <div class="hero-features">
+                    <div class="hero-feature">
+                        <i class="fa-solid fa-circle"></i>
+                        <span>Never miss your medicines</span>
+                    </div>
+                    <div class="hero-feature">
+                        <i class="fa-solid fa-circle"></i>
+                        <span>Tracks your medication</span>
+                    </div>
+                    <div class="hero-feature">
+                        <i class="fa-solid fa-circle"></i>
+                        <span>Sends alerts for missed doses</span>
+                    </div>
+                    <div class="hero-feature">
+                        <i class="fa-solid fa-circle"></i>
+                        <span>Your personal caretaker</span>
+                    </div>
+                </div>
+            </div>
+            <div class="hero-image"></div>
+        </div>
+    </div>
+
+    <!-- Signup Options Modal -->
+    <div class="signup-options-modal hidden" id="signupOptionsModal">
+        <div class="signup-options-content">
+            <h2>Choose Sign Up Type</h2>
+            <p>Please select how you'd like to sign up</p>
+            <button class="signup-option-btn" onclick="showPatientSignup()">
+                <i class="fa-solid fa-user"></i>
+                Sign Up as Patient
+            </button>
+            <button class="signup-option-btn" onclick="showCaretakerSignup()">
+                <i class="fa-solid fa-user-nurse"></i>
+                Sign Up as Caretaker
+            </button>
+            <button class="btn btn-outline" style="width: 100%; margin-top: 16px;"
+                onclick="hideSignupOptions()">Cancel</button>
+        </div>
+    </div>
+
+    <!-- Login/Signup Pages Container -->
+    <div class="hidden" id="authPages">
+        <header>
+            <a href="#" class="header-logo" onclick="showLanding(); return false;">MediTrack</a>
+        </header>
+
+        <main>
+            <!-- Login Card -->
+            <div class="login-card" id="loginCard">
+                <h1 class="brand-title">MediTrack</h1>
+                <p class="welcome-text">Welcome back! Please enter your details.</p>
+
+                <form action="#" method="POST">
+                    <div class="form-group">
+                        <label class="form-label" for="email">Email or Phone Number</label>
+                        <div class="input-wrapper">
+                            <i class="fa-regular fa-envelope"></i>
+                            <input type="text" id="email" class="form-input" placeholder="your.email@example.com">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="label-row">
+                            <label class="form-label" for="password">Password</label>
+                            <a href="#" class="forgot-password">Forgot password?</a>
+                        </div>
+                        <div class="input-wrapper">
+                            <i class="fa-solid fa-lock"></i>
+                            <input type="password" id="password" class="form-input" placeholder="••••••••">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-block">Log In</button>
+
+                    <p class="signup-prompt">
+                        Don't have an account? <a href="#" onclick="showSignupOptions(); return false;">Sign up</a>
+                    </p>
+                </form>
+            </div>
+
+            <!-- Patient Signup Card -->
+            <div class="signup-card hidden" id="patientSignupCard">
+                <div class="top-link">
+                    <span>Already have an account?</span>
+                    <a href="#" onclick="showLogin(); return false;">Log In</a>
+                </div>
+
+                <div class="signup-header">
+                    <h1 class="brand-title" style="margin-bottom: 12px;">MediTrack</h1>
+                    <h2 style="color: var(--primary-color); font-size: 20px; font-weight: 600; margin-bottom: 8px;">
+                        Patient Sign-up</h2>
+                    <p class="subtitle">Create your patient account to manage your medication and health details. All
+                        fields are required unless marked optional.</p>
+                </div>
+
+                <form action="#" method="POST">
+                    <div class="form-group">
+                        <label class="form-label" for="patientFullName">Full Name</label>
+                        <div class="input-wrapper">
+                            <i class="fa-solid fa-user"></i>
+                            <input type="text" id="patientFullName" class="form-input"
+                                placeholder="Enter your full name">
+                        </div>
+                        <p class="helper-text">Please provide your legal full name as it appears on official documents.
+                        </p>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="dateOfBirth">Date of Birth</label>
+                        <input type="date" id="dateOfBirth" class="form-input" style="padding-left: 12px;">
+                        <p class="helper-text">Your date of birth helps us verify your identity and age.</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="contactNumber">Contact Number</label>
+                        <div class="input-wrapper">
+                            <i class="fa-solid fa-phone"></i>
+                            <input type="tel" id="contactNumber" class="form-input"
+                                placeholder="e.g., +1 (555) 123-4567">
+                        </div>
+                        <p class="helper-text">We'll use this number for important alerts and communication.</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="medicationList">Medication List (Optional)</label>
+                        <textarea id="medicationList" class="form-textarea"
+                            placeholder="List any current medications, dosages, and frequency (e.g., Aspirin 81mg daily)"></textarea>
+                        <p class="helper-text">Providing this now helps pre-fill your medication profile. You can update
+                            it later.</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="prescriptionUpload">Upload Prescription (Optional)</label>
+                        <label for="prescriptionFile" class="upload-btn">
+                            <i class="fa-solid fa-upload"></i>
+                            Upload Prescription
+                        </label>
+                        <input type="file" id="prescriptionFile" accept=".pdf,.jpg,.jpeg,.png">
+                        <p class="helper-text">Securely upload a photo or PDF of your prescription for quick processing.
+                        </p>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="patientPassword">Password</label>
+                        <div class="input-wrapper">
+                            <i class="fa-solid fa-lock"></i>
+                            <input type="password" id="patientPassword" class="form-input"
+                                placeholder="Create a strong password">
+                        </div>
+                        <p class="helper-text">Must be at least 8 characters long, including numbers and symbols.</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="patientConfirmPassword">Confirm Password</label>
+                        <div class="input-wrapper">
+                            <i class="fa-solid fa-lock"></i>
+                            <input type="password" id="patientConfirmPassword" class="form-input"
+                                placeholder="Re-enter your password">
+                        </div>
+                        <p class="helper-text">Please re-enter your password to confirm it matches.</p>
+                    </div>
+
+                    <div class="checkbox-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="patientTermsCheckbox">
+                            <span>I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy
+                                    Policy</a>.</span>
+                        </label>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-block">Create Account</button>
+                </form>
+            </div>
+
+            <!-- Caretaker Signup Card -->
+            <div class="signup-card hidden" id="caretakerSignupCard">
+                <div class="top-link">
+                    <span>Already have an account?</span>
+                    <a href="#" onclick="showLogin(); return false;">Log In</a>
+                </div>
+
+                <div class="signup-header">
+                    <h1 class="brand-title" style="margin-bottom: 12px;">MediTrack</h1>
+                    <h2 style="color: var(--primary-color); font-size: 20px; font-weight: 600; margin-bottom: 8px;">Sign
+                        Up as a Caretaker</h2>
+                    <p class="subtitle">Create your account to support a patient with medication management</p>
+                </div>
+
+                <form action="#" method="POST">
+                    <!-- Personal Information -->
+                    <h3 class="section-title">Personal Information</h3>
+
+                    <div class="form-group">
+                        <label class="form-label" for="fullName">Full Name</label>
+                        <div class="input-wrapper">
+                            <i class="fa-solid fa-user"></i>
+                            <input type="text" id="fullName" class="form-input" placeholder="Enter your full name">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="relationship">Relationship to Patient</label>
+                        <div class="input-wrapper">
+                            <i class="fa-solid fa-users"></i>
+                            <select id="relationship" class="form-select">
+                                <option value="">Select relationship</option>
+                                <option value="spouse">Spouse</option>
+                                <option value="parent">Parent</option>
+                                <option value="child">Child</option>
+                                <option value="sibling">Sibling</option>
+                                <option value="friend">Friend</option>
+                                <option value="professional">Professional Caregiver</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="caretakerPhone">Contact Number</label>
+                        <div class="input-wrapper">
+                            <i class="fa-solid fa-phone"></i>
+                            <input type="tel" id="caretakerPhone" class="form-input"
+                                placeholder="Ex: +1 (555) 123-4567">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="caretakerEmail">Email (Optional)</label>
+                        <div class="input-wrapper">
+                            <i class="fa-regular fa-envelope"></i>
+                            <input type="email" id="caretakerEmail" class="form-input"
+                                placeholder="Enter your email (optional)">
+                        </div>
+                        <p class="helper-text">Used for important notifications and verification</p>
+                    </div>
+
+                    <!-- Patient Association & Verification -->
+                    <h3 class="section-title">Patient Association & Verification</h3>
+
+                    <div class="form-group">
+                        <label class="form-label" for="verificationMethod">Verification Method</label>
+                        <div class="input-wrapper">
+                            <i class="fa-solid fa-shield-halved"></i>
+                            <select id="verificationMethod" class="form-select">
+                                <option value="">How would you like to verify?</option>
+                                <option value="code">Patient-Provided Code</option>
+                                <option value="email">Patient's Email</option>
+                                <option value="phone">Patient's Phone Number</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="patientCode">Associated Patient Code / Email</label>
+                        <div class="input-wrapper">
+                            <i class="fa-solid fa-key"></i>
+                            <input type="text" id="patientCode" class="form-input"
+                                placeholder="Patient Code or Email Address">
+                        </div>
+                        <p class="helper-text">Enter the patient's unique code or email for linking your accounts</p>
+                    </div>
+
+                    <!-- Understanding Caregiver Permissions -->
+                    <h3 class="section-title">Understanding Caregiver Permissions</h3>
+
+                    <div class="info-box">
+                        <p><strong>As a caregiver, you will have access to:</strong></p>
+                        <p>• <strong>Manage</strong> certain aspects of the patient's profile, including medication
+                            schedules, refill reminders, and dose history</p>
+                        <p><strong>Your permissions will be limited to:</strong></p>
+                        <p>• Medication management and related communications. Access to sensitive medical data requires
+                            patient privacy.</p>
+                        <p><strong>Your permissions will be limited to medication management and related communication.
+                                Access to sensitive medical information requires patient approval.</strong></p>
+                    </div>
+
+                    <!-- Account Security -->
+                    <h3 class="section-title">Account Security</h3>
+
+                    <div class="form-group">
+                        <label class="form-label" for="caretakerPassword">Password</label>
+                        <div class="input-wrapper">
+                            <i class="fa-solid fa-lock"></i>
+                            <input type="password" id="caretakerPassword" class="form-input"
+                                placeholder="Create a strong password">
+                        </div>
+                        <p class="helper-text">Must be at least 8 characters long, including letters and numbers</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="confirmPassword">Re-enter your password</label>
+                        <div class="input-wrapper">
+                            <i class="fa-solid fa-lock"></i>
+                            <input type="password" id="confirmPassword" class="form-input"
+                                placeholder="Re-enter your password">
+                        </div>
+                    </div>
+
+                    <div class="checkbox-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="termsCheckbox">
+                            <span>I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy
+                                    Policy</a></span>
+                        </label>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-block">Create Account</button>
+                </form>
+            </div>
+        </main>
+
+        <footer>
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <div class="footer-logo-icon">
+                        <i class="fa-solid fa-heart-pulse"></i>
+                    </div>
+                    <p class="footer-desc">
+                        Empowering patients and caregivers with comprehensive medication management.
+                    </p>
+                    <div class="social-icons">
+                        <a href="#"><i class="fa-brands fa-google"></i></a>
+                        <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
+                    </div>
+                </div>
+
+                <div class="footer-links">
+                    <div class="link-column">
+                        <h4>Company</h4>
+                        <ul>
+                            <li><a href="#">About Us</a></li>
+                            <li><a href="#">Contact</a></li>
+                            <li><a href="#">Careers</a></li>
+                        </ul>
+                    </div>
+                    <div class="link-column">
+                        <h4>Support</h4>
+                        <ul>
+                            <li><a href="#">Help Center</a></li>
+                            <li><a href="#">Terms of Service</a></li>
+                            <li><a href="#">Privacy Policy</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                &copy; 2025 MediTrack. All rights reserved.
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Show landing page on load
+        window.onload = function () {
+            showLanding();
+        };
+
+        function showLanding() {
+            document.getElementById('landingPage').classList.remove('hidden');
+            document.getElementById('authPages').classList.add('hidden');
+            document.getElementById('signupOptionsModal').classList.add('hidden');
+        }
+
+        function showSignupOptions() {
+            document.getElementById('signupOptionsModal').classList.remove('hidden');
+        }
+
+        function hideSignupOptions() {
+            document.getElementById('signupOptionsModal').classList.add('hidden');
+        }
+
+        function showLogin() {
+            document.getElementById('landingPage').classList.add('hidden');
+            document.getElementById('authPages').classList.remove('hidden');
+            document.getElementById('signupOptionsModal').classList.add('hidden');
+            document.getElementById('loginCard').classList.remove('hidden');
+            document.getElementById('patientSignupCard').classList.add('hidden');
+            document.getElementById('caretakerSignupCard').classList.add('hidden');
+        }
+
+        function showPatientSignup() {
+            document.getElementById('landingPage').classList.add('hidden');
+            document.getElementById('authPages').classList.remove('hidden');
+            document.getElementById('signupOptionsModal').classList.add('hidden');
+            document.getElementById('loginCard').classList.add('hidden');
+            document.getElementById('patientSignupCard').classList.remove('hidden');
+            document.getElementById('caretakerSignupCard').classList.add('hidden');
+        }
+
+        function showCaretakerSignup() {
+            document.getElementById('landingPage').classList.add('hidden');
+            document.getElementById('authPages').classList.remove('hidden');
+            document.getElementById('signupOptionsModal').classList.add('hidden');
+            document.getElementById('loginCard').classList.add('hidden');
+            document.getElementById('patientSignupCard').classList.add('hidden');
+            document.getElementById('caretakerSignupCard').classList.remove('hidden');
+        }
+    </script>
+
+</body>
+
+</html>
